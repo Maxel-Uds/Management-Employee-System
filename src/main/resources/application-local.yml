@@ -1,0 +1,13 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /management-system-api/v1
+
+app:
+  name: management-employee-system
+  auth:
+    path: /auth/login
+  token:
+    refresh-token-exp: 3600000
+    access-token-exp: 1800000
+    jwt-secret: 6da0a55f-8d96-438e-b8f3-81d97c909d1c
