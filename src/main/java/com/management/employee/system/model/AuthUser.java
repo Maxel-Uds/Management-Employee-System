@@ -19,12 +19,19 @@ import java.util.stream.Collectors;
 public class AuthUser implements UserDetails {
 
     private String id;
-    private String name;
+    private UserType userType;
+    @ToString.Exclude
+    private String document;
     private String username;
     @ToString.Exclude
     private String password;
     private Set<String> scopes;
-    private Map<String, Object> payload;
+    private Map<String, String> payload;
+
+    public enum UserType {
+        ADMIN,
+        EMPLOYEE
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

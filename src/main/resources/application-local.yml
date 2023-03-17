@@ -3,7 +3,14 @@ server:
   servlet:
     context-path: /management-system-api/v1
 
+aws:
+  role:
+    arn: arn:aws:iam::821986558514:role/management-system-role
+  dynamodb:
+    region: us-east-1
+
 app:
+  id: 75b256b1-e7a5-4939-b29d-ea12c319d11f
   name: management-employee-system
   auth:
     path: /auth/login
@@ -11,3 +18,6 @@ app:
     refresh-token-exp: 3600000
     access-token-exp: 1800000
     jwt-secret: 6da0a55f-8d96-438e-b8f3-81d97c909d1c
+  auth-client:
+    user: d1c2eef0-32cb-4568-a544-862172dd6641
+    secret: d9ab017d-16a5-47d8-b4a1-619fe7144cdb
