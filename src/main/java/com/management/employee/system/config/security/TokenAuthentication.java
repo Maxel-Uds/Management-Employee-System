@@ -25,6 +25,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
 
         this.authUser = AuthUser.builder()
                 .id((String) decodedJWT.getClaim("payload").asMap().get("id"))
+                .username(decodedJWT.getClaim("sub").asString())
                 .document((String) decodedJWT.getClaim("payload").asMap().get("document"))
                 .userType(AuthUser.UserType.valueOf((String) decodedJWT.getClaim("payload").asMap().get("userType")))
                 .build();
