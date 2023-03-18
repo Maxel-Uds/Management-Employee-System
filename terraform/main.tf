@@ -10,5 +10,3 @@ variable "read_capacity" {
 variable "write_capacity" {
   default = 1
 }
-
-variable "user_pass" {}

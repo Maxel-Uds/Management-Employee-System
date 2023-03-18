@@ -1,6 +1,5 @@
 package com.management.employee.system.service.impl;
 
-import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.repositories.AuthUserRepository;
 import com.management.employee.system.service.AuthUserService;
 import lombok.RequiredArgsConstructor;

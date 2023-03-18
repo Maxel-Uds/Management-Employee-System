@@ -40,3 +40,34 @@ resource "aws_dynamodb_table" "auth_user" {
     projection_type = "ALL"
   }
 }
+
+resource "aws_dynamodb_table_item" "employee_scopes" {
+  table_name = aws_dynamodb_table.app_scopes.name
+  hash_key   = aws_dynamodb_table.app_scopes.hash_key
+
+  item = jsonencode({
+    userType = {"S": "EMPLOYEE"}
+  })
+}
+
+resource "aws_dynamodb_table_item" "admin_scopes" {
+  table_name = aws_dynamodb_table.app_scopes.name
+  hash_key   = aws_dynamodb_table.app_scopes.hash_key
+
+  item = jsonencode({
+    userType = {"S": "ADMIN"}
+  })
+}
+
+resource "aws_dynamodb_table" "app_scopes" {
+  provider           = aws.us-east-1
+  name               = "app_scopes"
+  hash_key           = "userType"
+  read_capacity      = var.read_capacity
+  write_capacity     = var.write_capacity
+
+  attribute {
+    name = "userType"
+    type = "S"
+  }
+}

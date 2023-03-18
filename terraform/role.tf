@@ -15,7 +15,8 @@ resource "aws_iam_role_policy" "dynamo-policy" {
         Effect = "Allow",
         Resource = [
           "arn:aws:dynamodb:us-east-1:821986558514:table/auth_user",
-          "arn:aws:dynamodb:us-east-1:821986558514:table/auth_user/index/*"
+          "arn:aws:dynamodb:us-east-1:821986558514:table/auth_user/index/*",
+          "arn:aws:dynamodb:us-east-1:821986558514:table/app_scopes",
         ]
       }
     ]
