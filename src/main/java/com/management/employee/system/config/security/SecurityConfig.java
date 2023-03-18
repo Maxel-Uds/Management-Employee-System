@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -24,7 +23,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableReactiveMethodSecurity
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_MATCHERS_POST = { "/test/no-auth" };
+    private static final String[] PUBLIC_MATCHERS_POST = { };
 
     private final ContextPathFilter contextPathFilter;
     private final AuthenticationFilter authenticationFilter;
@@ -51,7 +50,6 @@ public class SecurityConfig {
                 .logout().disable()
                 .csrf().disable()
                 .authorizeExchange()
-                    .pathMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                 .anyExchange()
                     .authenticated()
                 .and()

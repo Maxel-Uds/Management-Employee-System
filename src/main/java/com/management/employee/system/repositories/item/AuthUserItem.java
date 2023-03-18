@@ -8,7 +8,9 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 
-import java.util.*;
+import java.util.UUID;
+import java.util.Set;
+import java.util.Map;
 
 @DynamoDbBean(converterProviders = {CustomConverterProvider.class, DefaultAttributeConverterProvider.class})
 public class AuthUserItem {
@@ -21,8 +23,8 @@ public class AuthUserItem {
     private String document;
     private String username;
     private String password;
-    private Set<String> scopes = new HashSet<>();
-    private Map<String, String> payload = new LinkedHashMap<>();
+    private Set<String> scopes;
+    private Map<String, String> payload;
 
     public AuthUserItem() {
     }

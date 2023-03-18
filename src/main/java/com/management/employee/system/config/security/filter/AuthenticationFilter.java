@@ -4,6 +4,7 @@ import com.management.employee.system.config.security.handler.AuthenticationFail
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static org.springframework.http.HttpHeaders.*;
 
@@ -35,10 +37,19 @@ public class AuthenticationFilter extends AuthenticationWebFilter  {
         super(authenticationManager);
         setRequiresAuthenticationMatcher(this::matchAuthenticationHeader);
         setRequiresAuthenticationMatcher(this::matchLoginPath);
+        setRequiresAuthenticationMatcher(this::matchLoginMethod);
         setAuthenticationFailureHandler(authenticationFailureHandler);
         this.jwtUtil = jwtUtil;
         this.contextPath = contextPath;
         this.applicationLoginPath = applicationLoginPath;
+    }
+
+    protected final Mono<ServerWebExchangeMatcher.MatchResult> matchLoginMethod(ServerWebExchange exchange) {
+        log.trace("========= AuthenticationFilter matching login method ===========");
+        return Mono.fromCallable(() -> exchange.getRequest().getHeaders())
+                .filter(httpHeaders -> httpHeaders.containsKey(AUTHORIZATION))
+                .filter(httpHeaders -> StringUtils.startsWithIgnoreCase(httpHeaders.getFirst(AUTHORIZATION), "basic "))
+                .flatMap(httpHeaders -> Objects.equals(exchange.getRequest().getMethod(), HttpMethod.POST) ? ServerWebExchangeMatcher.MatchResult.match() : ServerWebExchangeMatcher.MatchResult.notMatch()).switchIfEmpty(ServerWebExchangeMatcher.MatchResult.match());
     }
 
     protected final Mono<ServerWebExchangeMatcher.MatchResult> matchLoginPath(ServerWebExchange exchange) {

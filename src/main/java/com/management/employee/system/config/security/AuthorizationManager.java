@@ -1,5 +1,6 @@
 package com.management.employee.system.config.security;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.management.employee.system.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +25,10 @@ public class AuthorizationManager implements ReactiveAuthenticationManager {
                 .then(this.jwtUtil.verifyToken(bearerToken))
                 .doOnError(error -> log.error("Invalid Credentials: [{}]", error.getMessage()))
                 .onErrorResume(e -> Mono.error(new BadCredentialsException("Invalid Credentials: the token is not valid")))
-                .flatMap(decodedJWT -> createAuthenticatedToken(bearerToken));
+                .flatMap(decodedJWT -> createAuthenticatedToken(bearerToken, decodedJWT));
     }
 
-    private Mono<TokenAuthentication> createAuthenticatedToken(String bearerToken) {
-        return Mono.just(new TokenAuthentication(bearerToken));
+    private Mono<TokenAuthentication> createAuthenticatedToken(String bearerToken, DecodedJWT decodedJWT) {
+        return Mono.just(new TokenAuthentication(bearerToken, decodedJWT, decodedJWT.getClaim("scope").asArray(String.class)));
     }
 }
