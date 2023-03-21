@@ -14,14 +14,64 @@ resource "aws_iam_role_policy" "dynamo-policy" {
         ],
         Effect = "Allow",
         Resource = [
-          "arn:aws:dynamodb:us-east-1:821986558514:table/auth_user",
-          "arn:aws:dynamodb:us-east-1:821986558514:table/auth_user/index/*",
-          "arn:aws:dynamodb:us-east-1:821986558514:table/app_scopes",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.auth_user.name}",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.auth_user.name}/index/*",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.app_scopes.name}",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.company.name}",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.company.name}/index/*",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.owner.name}",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.owner.name}/index/*"
         ]
       }
     ]
   })
 }
+
+
+resource "aws_iam_role_policy" "ses-policy" {
+  name = "ses-policy"
+  role = aws_iam_role.management-system-role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ses:sendEmail",
+          "ses:sendRawEmail"
+        ],
+        Effect = "Allow",
+        Resource = [
+          "arn:aws:ses:us-east-1:${var.aws_account}:identity/${aws_ses_email_identity.system_email.email}"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "sqs-policy" {
+  name = "sqs-policy"
+  role = aws_iam_role.management-system-role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "sqs:DeleteMessage",
+          "sqs:ReceiveMessage",
+          "sqs:SendMessage"
+        ],
+        Effect = "Allow",
+        Resource = [
+          "arn:aws:sqs:us-east-1:${var.aws_account}:${aws_sqs_queue.company-creation-sqs.name}",
+          "arn:aws:sqs:us-east-1:${var.aws_account}:${aws_sqs_queue.company-creation-dlq.name}"
+        ]
+      }
+    ]
+  })
+}
+
 
 resource "aws_iam_role" "management-system-role" {
   name = "management-system-role"

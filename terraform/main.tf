@@ -10,3 +10,11 @@ variable "read_capacity" {
 variable "write_capacity" {
   default = 1
 }
+
+variable "aws_account" {
+  default = "821986558514"
+}
+
+variable "message_retention_seconds" {
+  default = 345600
+}
