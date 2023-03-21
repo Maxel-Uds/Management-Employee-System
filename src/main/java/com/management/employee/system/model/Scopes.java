@@ -22,6 +22,16 @@ public class Scopes {
         if(Objects.isNull(this.scopes))
             this.scopes = new LinkedHashSet<>();
         this.scopes.addAll(scopes);
+        this.scopes.remove("");
+        return this;
+    }
+
+    public Scopes removeScope(Set<String> scopes) {
+        if(!this.scopes.contains("")) {
+            this.scopes.removeAll(scopes);
+        }
+
+        this.scopes.add("");
         return this;
     }
 }

@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 public interface ScopesService {
 
     Mono<ScopeUpdateResponse> saveScope(String role, ScopeUpdateRequest scopeUpdateRequest);
+    Mono<ScopeUpdateResponse> removeScope(String role, ScopeUpdateRequest scopeUpdateRequest);
 }

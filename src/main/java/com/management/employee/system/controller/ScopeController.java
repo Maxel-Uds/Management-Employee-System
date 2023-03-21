@@ -1,6 +1,5 @@
 package com.management.employee.system.controller;
 
-import com.management.employee.system.config.security.TokenAuthentication;
 import com.management.employee.system.controller.request.ScopeUpdateRequest;
 import com.management.employee.system.controller.response.ScopeUpdateResponse;
 import com.management.employee.system.service.ScopesService;
@@ -29,11 +28,23 @@ public class ScopeController {
     @PutMapping("/add")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(T(com.management.employee.system.config.security.scope.Scopes).FULL_ACCESS.getScope())")
-    Mono<ScopeUpdateResponse> addScopeToRole(@RequestParam(name = "to") String role, @Valid  @RequestBody ScopeUpdateRequest scopeUpdateRequest, TokenAuthentication tokenAuthentication) {
+    Mono<ScopeUpdateResponse> addScopeToRole(@RequestParam(name = "to") String role, @Valid  @RequestBody ScopeUpdateRequest scopeUpdateRequest) {
         return scopesService.saveScope(role, scopeUpdateRequest)
-                .doFirst(() -> log.info("==== Starting updating scopes of user type [{}]", role))
+                .doFirst(() -> log.info("==== Starting to add scopes to user type [{}]", role))
                 .doOnSuccess(scopes -> log.info("==== Scopes of role [{}] updated with success ====", role))
-                .doOnError(throwable -> log.error("==== An error ocurred and was not possible update scopes. Error: [{}]", throwable.getMessage()))
-                .doFinally(signalType -> log.info("==== Done process of update scopes with signal type [{}] ====", signalType));
+                .doOnError(throwable -> log.error("==== An error ocurred and was not possible add scopes. Error: [{}]", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done process of add scopes with signal type [{}] ====", signalType));
     }
+
+    @PutMapping("/remove")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority(T(com.management.employee.system.config.security.scope.Scopes).FULL_ACCESS.getScope())")
+    Mono<ScopeUpdateResponse> removeScopeToRole(@RequestParam(name = "to") String role, @Valid  @RequestBody ScopeUpdateRequest scopeUpdateRequest) {
+        return scopesService.removeScope(role, scopeUpdateRequest)
+                .doFirst(() -> log.info("==== Starting to remove scopes of user type [{}]", role))
+                .doOnSuccess(scopes -> log.info("==== Scopes of role [{}] updated with success ====", role))
+                .doOnError(throwable -> log.error("==== An error ocurred and was not possible remove scopes. Error: [{}]", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done process of remove scopes with signal type [{}] ====", signalType));
+    }
+
 }

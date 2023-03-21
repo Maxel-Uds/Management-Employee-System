@@ -28,7 +28,20 @@ public class ScopesServiceImpl implements ScopesService {
                     log.error("Role [{}] does not exists", role.toUpperCase());
                     return Mono.error(new RuntimeException(String.format("Role [%s] does not exists", role.toUpperCase())));
                 }))
-                .flatMap(aBoolean -> scopeRepository.saveScope(scopeUpdateRequest, AuthUser.UserType.valueOf(role.toUpperCase())))
+                .flatMap(aBoolean -> scopeRepository.addScope(scopeUpdateRequest, AuthUser.UserType.valueOf(role.toUpperCase())))
+                .flatMap(scopes -> Mono.just(mapper.toResponse(scopes)));
+    }
+
+    @Override
+    public Mono<ScopeUpdateResponse> removeScope(String role, ScopeUpdateRequest scopeUpdateRequest) {
+        log.info("==== Start process of remove scope [{}] of [{}] ====", scopeUpdateRequest.getScopes(), role);
+        return Mono.just(role.toUpperCase().equals(AuthUser.UserType.ADMIN.name()) || role.toUpperCase().equals(AuthUser.UserType.EMPLOYEE.name()))
+                .filter(Boolean.TRUE::equals)
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.error("Role [{}] does not exists", role.toUpperCase());
+                    return Mono.error(new RuntimeException(String.format("Role [%s] does not exists", role.toUpperCase())));
+                }))
+                .flatMap(aBoolean -> scopeRepository.removeScope(scopeUpdateRequest, AuthUser.UserType.valueOf(role.toUpperCase())))
                 .flatMap(scopes -> Mono.just(mapper.toResponse(scopes)));
     }
 }

@@ -6,6 +6,7 @@ import com.management.employee.system.model.Scopes;
 import reactor.core.publisher.Mono;
 
 public interface ScopeRepository {
-    Mono<Scopes> saveScope(ScopeUpdateRequest request, AuthUser.UserType userType);
+    Mono<Scopes> addScope(ScopeUpdateRequest request, AuthUser.UserType userType);
+    Mono<Scopes> removeScope(ScopeUpdateRequest request, AuthUser.UserType userType);
 
 }

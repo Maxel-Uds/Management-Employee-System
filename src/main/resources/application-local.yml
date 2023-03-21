@@ -4,6 +4,7 @@ server:
     context-path: /management-system-api/v1
 
 aws:
+  profile: assume_role
   role:
     arn: arn:aws:iam::821986558514:role/management-system-role
   dynamodb:
