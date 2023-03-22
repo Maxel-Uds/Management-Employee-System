@@ -1,5 +1,6 @@
 package com.management.employee.system.controller.exceptionHandler;
 
+import com.management.employee.system.exception.ResourceAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -47,6 +48,23 @@ public class ValidationExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ErrorResponse accessDeniedException(AccessDeniedException exception, ServerHttpRequest request){
         return forbiddenRequestResponseOf(exception, request);
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ErrorResponse resourceAlreadyExistsException(ResourceAlreadyExistsException exception, ServerHttpRequest request){
+        return dataConflictRequestResponseOf(exception, request);
+    }
+
+    private ErrorResponse dataConflictRequestResponseOf(RuntimeException exception, ServerHttpRequest request){
+        return ErrorResponse
+                .builder()
+                .message(exception.getMessage())
+                .status(HttpStatus.CONFLICT.value())
+                .timestamp(System.currentTimeMillis())
+                .path(request.getURI().getPath())
+                .error(HttpStatus.CONFLICT.name().toLowerCase())
+                .build();
     }
 
     private ErrorResponse badRequestResponseOf(RuntimeException exception, ServerHttpRequest request){

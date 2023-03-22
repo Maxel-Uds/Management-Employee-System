@@ -89,9 +89,22 @@ resource "aws_dynamodb_table" "company" {
     type = "S"
   }
 
+  attribute {
+    name = "alias"
+    type = "S"
+  }
+
   global_secondary_index  {
     name = "company_document_index"
     hash_key = "document"
+    write_capacity = var.read_capacity
+    read_capacity = var.write_capacity
+    projection_type = "ALL"
+  }
+
+  global_secondary_index  {
+    name = "company_alias_index"
+    hash_key = "alias"
     write_capacity = var.read_capacity
     read_capacity = var.write_capacity
     projection_type = "ALL"
