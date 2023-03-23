@@ -8,5 +8,6 @@ import reactor.core.publisher.Mono;
 public interface ScopeRepository {
     Mono<Scopes> addScope(ScopeUpdateRequest request, AuthUser.UserType userType);
     Mono<Scopes> removeScope(ScopeUpdateRequest request, AuthUser.UserType userType);
+    Mono<Scopes> findScopesByUserType(AuthUser.UserType userType);
 
 }

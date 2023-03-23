@@ -1,6 +1,8 @@
 package com.management.employee.system.repositories.item;
 
 import com.management.employee.system.model.AuthUser;
+import com.management.employee.system.model.Company;
+import com.management.employee.system.model.Owner;
 import com.management.employee.system.repositories.converter.CustomConverterProvider;
 import org.springframework.security.core.userdetails.UserDetails;
 import software.amazon.awssdk.enhanced.dynamodb.DefaultAttributeConverterProvider;
@@ -29,14 +31,14 @@ public class AuthUserItem {
     public AuthUserItem() {
     }
 
-    public AuthUserItem(AuthUser authUser) {
+    public AuthUserItem(Owner owner, Set<String> scopes, String pass, Map<String, String> payload) {
         this.id = UUID.randomUUID().toString();
-        this.userType = authUser.getUserType();
-        this.document = authUser.getDocument();
-        this.username = authUser.getUsername();
-        this.password = authUser.getPassword();
-        this.scopes = authUser.getScopes();
-        this.payload = authUser.getPayload();
+        this.userType = AuthUser.UserType.ADMIN;
+        this.document = owner.getDocument();
+        this.username = owner.getUsername();
+        this.password = pass;
+        this.scopes = scopes;
+        this.payload = payload;
     }
 
     @DynamoDbPartitionKey
@@ -97,7 +99,19 @@ public class AuthUserItem {
         this.payload = payload;
     }
 
-    public UserDetails toModel() {
+    public UserDetails toUserDetails() {
+        return AuthUser.builder()
+                .id(id)
+                .userType(userType)
+                .document(document)
+                .password(password)
+                .scopes(scopes)
+                .payload(payload)
+                .username(username)
+                .build();
+    }
+
+    public AuthUser toModel() {
         return AuthUser.builder()
                 .id(id)
                 .userType(userType)

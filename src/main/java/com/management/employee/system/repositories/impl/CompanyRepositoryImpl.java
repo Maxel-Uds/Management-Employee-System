@@ -51,4 +51,10 @@ public class CompanyRepositoryImpl implements CompanyRepository {
                 .collectList()
                 .flatMap(companies -> Mono.just(companies.stream().findFirst().orElse(Company.builder().build())));
     }
+
+    @Override
+    public Mono<Company> save(CompanyItem company) {
+        log.info("==== Saving company [{}] ====", company);
+        return Mono.fromFuture(table.putItem(company)).thenReturn(company.toModel());
+    }
 }

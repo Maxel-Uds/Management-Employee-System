@@ -2,6 +2,7 @@ package com.management.employee.system.controller.request;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
 public class CompanyCreateRequest {
 

@@ -26,8 +26,8 @@ public class AuthUserRepositoryImpl implements AuthUserRepository {
     }
 
     @Override
-    public Mono<AuthUser> save() {
-        return null;
+    public Mono<AuthUser> save(AuthUserItem authUser) {
+        return Mono.fromFuture(table.putItem(authUser)).thenReturn(authUser.toModel());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class AuthUserRepositoryImpl implements AuthUserRepository {
 
         return Mono.just(PagePublisher.create(responseWithName).items())
                 .flatMapMany(Flux::mergeSequential)
-                .map(AuthUserItem::toModel)
+                .map(AuthUserItem::toUserDetails)
                 .collectList()
                 .flatMap(userDetails -> !userDetails.isEmpty() ?  Mono.just(userDetails.stream().findFirst().orElse(AuthUser.builder().build())) : Mono.empty());
     }

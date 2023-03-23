@@ -11,6 +11,16 @@ aws:
   sqs:
     url: https://sqs.us-east-1.amazonaws.com/821986558514/company-creation-sqs
     url-dlq: https://sqs.us-east-1.amazonaws.com/821986558514/company-creation-dlq
+    listeners: 1
+    batch-size: 10
+    wait-time: 20
+    receive-count: 0
+    visibility-timeout: 60
+    max-visibility-timeout: 43200
+  ses:
+    from: "systemmanagementemployee@gmail.com"
+    welcome-owner:
+      subject: "Bem Vindo ao Sistema de Gerenciamento de Funcionários!"
 
 app:
   id: 75b256b1-e7a5-4939-b29d-ea12c319d11f

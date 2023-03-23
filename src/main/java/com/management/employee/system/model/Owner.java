@@ -1,9 +1,6 @@
 package com.management.employee.system.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 @Data
@@ -18,4 +15,8 @@ public class Owner {
     private String phone;
     private String email;
     private String document;
+    @ToString.Exclude
+    private String password;
+    @ToString.Exclude
+    private String username;
 }

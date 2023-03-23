@@ -42,7 +42,8 @@ public class ScopeRepositoryImpl implements ScopeRepository {
     }
 
 
-    private Mono<Scopes> findScopesByUserType(AuthUser.UserType userType) {
+    @Override
+    public Mono<Scopes> findScopesByUserType(AuthUser.UserType userType) {
         log.info("==== Looking for scopes  of user type [{}] ====", userType.name());
         return Mono.fromFuture(table.getItem(Key.builder()
                 .partitionValue(userType.name())

@@ -5,7 +5,10 @@ import com.management.employee.system.controller.response.CompanyCreateResponse;
 import com.management.employee.system.exception.ResourceAlreadyExistsException;
 import com.management.employee.system.mapper.CompanyMapper;
 import com.management.employee.system.repositories.CompanyRepository;
+import com.management.employee.system.repositories.item.CompanyItem;
 import com.management.employee.system.service.CompanyService;
+import com.management.employee.system.service.EmailService;
+import com.management.employee.system.service.OwnerService;
 import com.management.employee.system.sqs.SqsProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,19 +21,29 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
-
-    private final CompanyRepository companyRepository;
     private final SqsProducer sqsProducer;
-
+    private final EmailService emailService;
+    private final OwnerService ownerService;
     private final CompanyMapper companyMapper;
+    private final CompanyRepository companyRepository;
+
 
     @Override
-    public Mono<CompanyCreateResponse> createCompany(CompanyCreateRequest request) {
+    public Mono<CompanyCreateResponse> createCompanyAsync(CompanyCreateRequest request) {
         return this.verifyIfAliasExists(request)
                 .flatMap(this::verifyIfDocumentExists)
                 .flatMap(this.sqsProducer::produce)
                 .flatMap(companyRequest -> Mono.just(this.companyMapper.toResponse(companyRequest)));
+    }
 
+    @Override
+    public Mono<Void> createCompany(CompanyCreateRequest request) {
+        log.info("==== Starting process to create a company with request [{}] ====", request);
+        return this.ownerService.saveOwner(request.getOwner())
+                .zipWhen(owner -> this.companyRepository.save(new CompanyItem(request, owner.getId())))
+                .flatMap(ownerAndCompany -> this.ownerService.createOwnerAuthUser(ownerAndCompany.getT1(), ownerAndCompany.getT2()).thenReturn(ownerAndCompany))
+                .flatMap(ownerAndCompany -> this.emailService.sendWelcomeMailToOwner(ownerAndCompany.getT1(), ownerAndCompany.getT2()))
+                .then();
     }
 
     private Mono<CompanyCreateRequest> verifyIfAliasExists(CompanyCreateRequest request) {

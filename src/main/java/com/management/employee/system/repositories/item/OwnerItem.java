@@ -1,11 +1,14 @@
 package com.management.employee.system.repositories.item;
 
+import com.management.employee.system.controller.request.CompanyOwner;
 import com.management.employee.system.model.Owner;
 import com.management.employee.system.repositories.converter.CustomConverterProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DefaultAttributeConverterProvider;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
+
+import java.util.UUID;
 
 @DynamoDbBean(converterProviders = {CustomConverterProvider.class, DefaultAttributeConverterProvider.class})
 public class OwnerItem {
@@ -23,6 +26,13 @@ public class OwnerItem {
     public OwnerItem() {
     }
 
+    public OwnerItem(CompanyOwner owner) {
+        this.id = UUID.randomUUID().toString();
+        this.name = owner.getName();
+        this.phone = owner.getPhone();
+        this.email = owner.getEmail();
+        this.document = owner.getDocument();
+    }
 
     @DynamoDbPartitionKey
     public String getId() {

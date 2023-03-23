@@ -6,5 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface CompanyService {
 
-    Mono<CompanyCreateResponse> createCompany(CompanyCreateRequest request);
+    Mono<CompanyCreateResponse> createCompanyAsync(CompanyCreateRequest request);
+    Mono<Void> createCompany(CompanyCreateRequest request);
 }

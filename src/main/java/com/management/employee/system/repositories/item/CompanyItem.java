@@ -1,11 +1,14 @@
 package com.management.employee.system.repositories.item;
 
+import com.management.employee.system.controller.request.CompanyCreateRequest;
 import com.management.employee.system.model.Company;
 import com.management.employee.system.repositories.converter.CustomConverterProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DefaultAttributeConverterProvider;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
+
+import java.util.UUID;
 
 
 @DynamoDbBean(converterProviders = {CustomConverterProvider.class, DefaultAttributeConverterProvider.class})
@@ -22,6 +25,14 @@ public class CompanyItem {
     private String ownerId;
 
     public CompanyItem() {
+    }
+
+    public CompanyItem(CompanyCreateRequest request, String ownerId) {
+        this.id = UUID.randomUUID().toString();
+        this.name = request.getName();
+        this.alias = request.getAlias();
+        this.document = request.getDocument();
+        this.ownerId = ownerId;
     }
 
     @DynamoDbPartitionKey

@@ -4,6 +4,7 @@ import com.management.employee.system.controller.request.ScopeUpdateRequest;
 import com.management.employee.system.controller.response.ScopeUpdateResponse;
 import com.management.employee.system.mapper.ScopesMapper;
 import com.management.employee.system.model.AuthUser;
+import com.management.employee.system.model.Scopes;
 import com.management.employee.system.repositories.ScopeRepository;
 import com.management.employee.system.service.ScopesService;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,11 @@ public class ScopesServiceImpl implements ScopesService {
                 }))
                 .flatMap(aBoolean -> scopeRepository.removeScope(scopeUpdateRequest, AuthUser.UserType.valueOf(role.toUpperCase())))
                 .flatMap(scopes -> Mono.just(mapper.toResponse(scopes)));
+    }
+
+    @Override
+    public Mono<Scopes> findByUserType(AuthUser.UserType userType) {
+        log.info("==== Getting all scopes of role [{}] ====", userType.name());
+        return scopeRepository.findScopesByUserType(userType);
     }
 }

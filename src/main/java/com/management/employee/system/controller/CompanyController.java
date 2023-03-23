@@ -26,7 +26,7 @@ public class CompanyController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     Mono<CompanyCreateResponse> createCompany(@RequestBody @Valid CompanyCreateRequest request) {
-        return companyService.createCompany(request)
+        return companyService.createCompanyAsync(request)
                 .doFirst(() -> log.info("==== Starting process of create company ===="))
                 .doOnSuccess(response -> log.info("==== Company created with success ===="))
                 .doOnError(throwable -> log.error("==== An error ocurred and was not possible create company. Error: [{}]", throwable.getMessage()))
