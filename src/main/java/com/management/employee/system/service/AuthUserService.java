@@ -9,5 +9,6 @@ import reactor.core.publisher.Mono;
 public interface AuthUserService {
 
     Mono<UserDetails> findByUserName(String userName);
-    public Mono<AuthUser> createAuthUser(AuthUserItem authUser);
+    Mono<AuthUser> createAuthUser(AuthUserItem authUser);
+    Mono<AuthUser> updateAuthUserScopes(AuthUser authUser);
 }

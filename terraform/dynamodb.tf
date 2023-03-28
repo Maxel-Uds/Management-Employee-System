@@ -10,7 +10,7 @@ resource "aws_dynamodb_table_item" "auth_client" {
       "userType": {"S": "ADMIN"},
       "document": {"S": "0000000"},
       "scopes":   {"SS": ["fullAccess:application"]},
-      "payload":  {"S": "{\"id\":\"d1c2eef0-32cb-4568-a544-862172dd6641\",\"userType\":\"ADMIN\",\"document\":\"0000000\"}"}
+      "payload":  {"M": {"id": {"S": "d2eb9f49-9508-4a34-b42b-742740fb362b"}, "userType": {"S": "ADMIN"}, "document": {"S": "0000000"}}}
     }
     ITEM
 }

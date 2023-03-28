@@ -3,6 +3,7 @@ package com.management.employee.system.repositories.impl;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.repositories.AuthUserRepository;
 import com.management.employee.system.repositories.item.AuthUserItem;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.PagePublisher;
 
 import static software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional.keyEqualTo;
 
+@Slf4j
 @Repository
 public class AuthUserRepositoryImpl implements AuthUserRepository {
 
@@ -40,5 +42,11 @@ public class AuthUserRepositoryImpl implements AuthUserRepository {
                 .map(AuthUserItem::toUserDetails)
                 .collectList()
                 .flatMap(userDetails -> !userDetails.isEmpty() ?  Mono.just(userDetails.stream().findFirst().orElse(AuthUser.builder().build())) : Mono.empty());
+    }
+
+    @Override
+    public Mono<AuthUser> updateAuthUserScopes(AuthUser authUser) {
+        return Mono.fromFuture(table.updateItem(new AuthUserItem(authUser)))
+                .flatMap(authUserItem -> Mono.just(authUserItem.toModel()));
     }
 }

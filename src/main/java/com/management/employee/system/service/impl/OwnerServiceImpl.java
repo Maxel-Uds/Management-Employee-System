@@ -41,16 +41,17 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public Mono<Owner> createOwnerAuthUser(Owner owner, Company company) {
         log.info("==== Start creation of auth user to owner [{}] ====", owner.getId());
-        return this.formatScopes(company)
+        return this.formatOwnerScopes(company.getId())
                 .zipWhen(scopes -> this.createPayload(company, owner))
                 .flatMap(scopesAndPayload -> Mono.just(new AuthUserItem(owner.setUsername(String.format("%s-%s", company.getAlias(), owner.getDocument())), scopesAndPayload.getT1(), createRandomPass(owner), scopesAndPayload.getT2())))
                 .flatMap(this.authUserService::createAuthUser)
                 .thenReturn(owner);
     }
 
-    private Mono<Set<String>> formatScopes(Company company) {
+    @Override
+    public Mono<Set<String>> formatOwnerScopes(String companyId) {
         Map<String, String> ids = new HashMap<>() {{
-           put("companyId", company.getId());
+           put("companyId", companyId);
         }};
 
         return this.scopesService.findByUserType(AuthUser.UserType.ADMIN)

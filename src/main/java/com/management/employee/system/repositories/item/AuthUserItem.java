@@ -1,9 +1,9 @@
 package com.management.employee.system.repositories.item;
 
 import com.management.employee.system.model.AuthUser;
-import com.management.employee.system.model.Company;
 import com.management.employee.system.model.Owner;
 import com.management.employee.system.repositories.converter.CustomConverterProvider;
+import lombok.ToString;
 import org.springframework.security.core.userdetails.UserDetails;
 import software.amazon.awssdk.enhanced.dynamodb.DefaultAttributeConverterProvider;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.Set;
 import java.util.Map;
 
+@ToString
 @DynamoDbBean(converterProviders = {CustomConverterProvider.class, DefaultAttributeConverterProvider.class})
 public class AuthUserItem {
 
@@ -24,11 +25,22 @@ public class AuthUserItem {
     private AuthUser.UserType userType;
     private String document;
     private String username;
+    @ToString.Exclude
     private String password;
     private Set<String> scopes;
     private Map<String, String> payload;
 
     public AuthUserItem() {
+    }
+
+    public AuthUserItem(AuthUser authUser) {
+        this.id = authUser.getId();
+        this.userType = authUser.getUserType();
+        this.document = authUser.getDocument();
+        this.username = authUser.getUsername();
+        this.password = authUser.getPassword();
+        this.scopes   = authUser.getScopes();
+        this.payload  = authUser.getPayload();
     }
 
     public AuthUserItem(Owner owner, Set<String> scopes, String pass, Map<String, String> payload) {

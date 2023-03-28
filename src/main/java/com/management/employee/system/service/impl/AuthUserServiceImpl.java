@@ -1,8 +1,6 @@
 package com.management.employee.system.service.impl;
 
 import com.management.employee.system.model.AuthUser;
-import com.management.employee.system.model.Company;
-import com.management.employee.system.model.Owner;
 import com.management.employee.system.repositories.AuthUserRepository;
 import com.management.employee.system.repositories.item.AuthUserItem;
 import com.management.employee.system.service.AuthUserService;
@@ -29,6 +27,13 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public Mono<AuthUser> createAuthUser(AuthUserItem authUser) {
-        return null;
+        log.info("==== Calling auth repository to save auth user [{}] ====", authUser);
+        return authUserRepository.save(authUser);
+    }
+
+    @Override
+    public Mono<AuthUser> updateAuthUserScopes(AuthUser authUser) {
+        log.info("==== Updating scopes of user [{}] with scopes [{}] ====", authUser.getId(), authUser.getScopes());
+        return this.authUserRepository.updateAuthUserScopes(authUser);
     }
 }

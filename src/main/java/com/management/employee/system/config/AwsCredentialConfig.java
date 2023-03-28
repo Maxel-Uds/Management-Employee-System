@@ -18,12 +18,6 @@ import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
 public class AwsCredentialConfig {
 
     @Bean
-    public AwsCredentialsProvider awsCredentialsProvider() {
-        return DefaultCredentialsProvider.create();
-    }
-
-    @Bean
-    @Profile("local")
     public AwsCredentialsProvider awsCredentialsProvider(@Value("${aws.role.arn}") String roleArn, @Value("${app.id}") String appId, @Value("${aws.profile}") String profileName) {
         log.info("==== Assuming role with profile [{}] ====", profileName);
         return StsAssumeRoleCredentialsProvider.builder()

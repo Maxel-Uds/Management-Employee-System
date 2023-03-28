@@ -42,7 +42,7 @@ resource "aws_iam_role_policy" "ses-policy" {
         ],
         Effect = "Allow",
         Resource = [
-          "arn:aws:ses:us-east-1:${var.aws_account}:identity/${aws_ses_email_identity.system_email.email}"
+          "arn:aws:ses:us-east-1:${var.aws_account}:identity/*"
         ]
       }
     ]

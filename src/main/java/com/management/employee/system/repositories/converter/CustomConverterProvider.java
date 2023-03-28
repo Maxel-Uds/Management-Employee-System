@@ -14,7 +14,6 @@ public class CustomConverterProvider implements AttributeConverterProvider {
     public static Map<EnhancedType<?>, AttributeConverter<?>> build() {
         var map = new HashMap<EnhancedType<?>, AttributeConverter<?>>();
         addConverter(map, new JsonNodeAttributeConverter());
-        addConverter(map, new StringToMapAttributeConverter());
         return map;
     }
 
