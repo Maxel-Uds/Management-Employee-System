@@ -10,7 +10,8 @@ resource "aws_iam_role_policy" "dynamo-policy" {
           "dynamodb:PutItem",
           "dynamodb:GetItem",
           "dynamodb:UpdateItem",
-          "dynamodb:Query"
+          "dynamodb:Query",
+          "dynamodb:DeleteItem"
         ],
         Effect = "Allow",
         Resource = [

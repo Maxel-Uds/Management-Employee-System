@@ -25,6 +25,7 @@ public class AuthenticationFailureHandler implements ServerAuthenticationFailure
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         try {
             var errorResponse = new ObjectMapper().writeValueAsString(buildErrorResponse(webFilterExchange.getExchange().getRequest())).getBytes(StandardCharsets.UTF_8);
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.writeWith(Mono.just(response.bufferFactory().wrap(errorResponse)));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

@@ -19,7 +19,7 @@ public class AuthenticationDataController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(T(com.management.employee.system.config.security.scope.Scopes).FULL_ACCESS.getScope())")
     Mono<String> helloToAuthenticatedUser(TokenAuthentication tokenAuthentication) {
-        log.info("Hello user [{}]", tokenAuthentication.getPrincipal().getId());
-        return Mono.just("Hello user [" + tokenAuthentication.getPrincipal().getId() + "]");
+        log.info("Hello user [{}]", tokenAuthentication.getPrincipal().getUsername());
+        return Mono.just("Hello user [" + tokenAuthentication.getPrincipal().getUsername() + "]");
     }
 }

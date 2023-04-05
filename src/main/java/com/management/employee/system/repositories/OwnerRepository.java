@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 public interface OwnerRepository {
 
     Mono<Owner> save(OwnerItem owner);
+    Mono<Void> delete(String ownerId);
 }

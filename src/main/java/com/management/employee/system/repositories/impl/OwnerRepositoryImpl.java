@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
 @Slf4j
@@ -26,5 +27,10 @@ public class OwnerRepositoryImpl implements OwnerRepository {
     public Mono<Owner> save(OwnerItem owner) {
         log.info("==== Saving owner item [{}] ====", owner);
         return Mono.fromFuture(table.putItem(owner)).thenReturn(owner.toModel());
+    }
+
+    @Override
+    public Mono<Void> delete(String ownerId) {
+        return Mono.fromFuture(table.deleteItem(Key.builder().partitionValue(ownerId).build())).then();
     }
 }

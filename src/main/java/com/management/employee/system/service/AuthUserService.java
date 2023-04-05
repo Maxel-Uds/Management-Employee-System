@@ -11,4 +11,5 @@ public interface AuthUserService {
     Mono<UserDetails> findByUserName(String userName);
     Mono<AuthUser> createAuthUser(AuthUserItem authUser);
     Mono<AuthUser> updateAuthUserScopes(AuthUser authUser);
+    Mono<Void> deleteAuthUser(String userName);
 }

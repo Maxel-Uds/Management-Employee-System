@@ -49,4 +49,10 @@ public class AuthUserRepositoryImpl implements AuthUserRepository {
         return Mono.fromFuture(table.updateItem(new AuthUserItem(authUser)))
                 .flatMap(authUserItem -> Mono.just(authUserItem.toModel()));
     }
+
+    @Override
+    public Mono<Void> delete(String authUserId) {
+        log.info("==== Deleting auth user [{}] ====", authUserId);
+        return Mono.fromFuture(table.deleteItem(Key.builder().partitionValue(authUserId).build())).then();
+    }
 }

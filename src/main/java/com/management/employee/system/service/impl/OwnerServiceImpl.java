@@ -49,6 +49,12 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public Mono<Void> deleteOwner(String ownerId) {
+        log.info("==== Deleting owner [{}] ====", ownerId);
+        return ownerRepository.delete(ownerId);
+    }
+
+    @Override
     public Mono<Set<String>> formatOwnerScopes(String companyId) {
         Map<String, String> ids = new HashMap<>() {{
            put("companyId", companyId);
@@ -80,6 +86,7 @@ public class OwnerServiceImpl implements OwnerService {
             put("companyAlias", company.getAlias());
             put("ownerId", owner.getId());
             put("ownerEmail", owner.getEmail());
+            put("ownerName", owner.getName());
         }});
     }
 }

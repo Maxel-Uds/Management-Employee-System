@@ -21,6 +21,8 @@ aws:
     from: "systemmanagementemployee@gmail.com"
     welcome-owner:
       subject: "Bem Vindo ao Sistema de Gerenciamento de Funcionários!"
+    company-deletion:
+        subject: "Confirmação de Exclusão de Cadastro"
 
 app:
   id: 75b256b1-e7a5-4939-b29d-ea12c319d11f

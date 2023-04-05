@@ -14,7 +14,9 @@ import reactor.core.publisher.Mono;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -24,15 +26,18 @@ public class EmailServiceImpl implements EmailService {
     private final SesClient client;
     private final ITemplateEngine engine;
     private final String welcomeOwnerSubject;
+    private final String ownerCompanyDeletionSubject;
 
     @Autowired
     public EmailServiceImpl(ITemplateEngine engine, SesClient client,
                         @Value("${aws.ses.from}") String from,
-                        @Value("${aws.ses.welcome-owner.subject}") String welcomeOwnerSubject) {
+                        @Value("${aws.ses.welcome-owner.subject}") String welcomeOwnerSubject,
+                        @Value("${aws.ses.company-deletion.subject}")String ownerCompanyDeletionSubject) {
         this.from = from;
         this.engine = engine;
         this.client = client;
         this.welcomeOwnerSubject = welcomeOwnerSubject;
+        this.ownerCompanyDeletionSubject = ownerCompanyDeletionSubject;
     }
 
     @Override
@@ -52,6 +57,24 @@ public class EmailServiceImpl implements EmailService {
 
         log.info("==== Sending Welcome Owner Email to: [{}] ====", owner.getEmail());
         return this.sendEmailAsHtml(owner.getEmail(), html, welcomeOwnerSubject);
+    }
+
+    @Override
+    public Mono<Void> sendDeletionCompanyEmailToOwner(Map<String, String> authUserPayload) {
+        ModelAndView resp = ModelAndView.builder()
+                .view("ownerCompanyDeletion")
+                .model(new HashMap<>() {{
+                    put("companyName", authUserPayload.get("companyName"));
+                    put("ownerName", authUserPayload.get("ownerName"));
+                    put("deleteDate", LocalDateTime.now());
+                }})
+                .build();
+
+        Context context = new Context(resp.getLocale(), resp.getModel());
+        String html = engine.process(resp.getView(), context);
+
+        log.info("==== Sending Deletion Company Email to: [{}] ====", authUserPayload.get("ownerEmail"));
+        return this.sendEmailAsHtml(authUserPayload.get("ownerEmail"), html, ownerCompanyDeletionSubject);
     }
 
     private Mono<Void> sendEmailAsHtml(String to, String htmlMessage, String subject) {

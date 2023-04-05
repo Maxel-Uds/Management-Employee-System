@@ -36,4 +36,10 @@ public class AuthUserServiceImpl implements AuthUserService {
         log.info("==== Updating scopes of user [{}] with scopes [{}] ====", authUser.getId(), authUser.getScopes());
         return this.authUserRepository.updateAuthUserScopes(authUser);
     }
+
+    @Override
+    public Mono<Void> deleteAuthUser(String userName) {
+        return this.findByUserName(userName)
+                .flatMap(userDetails -> this.authUserRepository.delete(((AuthUser) userDetails).getId()));
+    }
 }

@@ -35,7 +35,7 @@
     <tbody>
     <tr>
         <td align="center" height="60px" style="padding-top:30px;">
-            <h1>Bem vindo, <span th:text="|${name}|" style="font-size:25px;">{name}</span>!</h1>
+            <h1>Olá, <span th:text="|${ownerName}|" style="font-size:25px;">{ownerName}</span>!</h1>
         </td>
     </tr>
     <tr>
@@ -44,17 +44,15 @@
                 <tbody>
                 <tr>
                     <td align="center" style="padding-bottom:0px;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:bold;color:#2F3648;">
-                        <p>Você cadastrou a empresa:</p>
-                        <p style="background-color:yellow;width:min-content;padding:10px" th:text="|${companyName}|">{companyName}</p>
+                        <p>Você solicitou a exclusão da empresa <span style="color:red" th:text="|${companyName}|">{companyName}</span> do nosso sistema no dia
+                            <span style="color:red" th:text="|${deleteDate}|">{deleteDate}</span>.
+                        </p>
                     </td>
                 </tr>
                 <tr>
                     <td align="center" style="font-family:Helvetica,Arial,sans-serif;font-weight:bold;color:#2F3648;">
                         <p style="font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:bold;color:#2F3648;">
-                            Seu usuário é: <span style="color:red;" th:text="|${username}|">{username}</span>
-                        </p>
-                        <p style="font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:bold;color:#2F3648;">
-                            Sua senha de acesso é: <span style="color:red;" th:text="|${password}|">{password}</span>
+                            Este Email é uma confirmação da exclusão do seu cadastro das nossas bases de dados.
                         </p>
                     </td>
                 </tr>

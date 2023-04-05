@@ -12,4 +12,5 @@ public interface OwnerService {
     Mono<Owner> saveOwner(CompanyOwner owner);
     Mono<Set<String>> formatOwnerScopes(String companyId);
     Mono<Owner> createOwnerAuthUser(Owner owner, Company company);
+    Mono<Void> deleteOwner(String ownerId);
 }

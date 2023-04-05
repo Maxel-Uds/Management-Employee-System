@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PagePublisher;
 
@@ -56,5 +57,11 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public Mono<Company> save(CompanyItem company) {
         log.info("==== Saving company [{}] ====", company);
         return Mono.fromFuture(table.putItem(company)).thenReturn(company.toModel());
+    }
+
+    @Override
+    public Mono<Void> delete(String companyId) {
+        log.info("==== Deleting company [{}] ====", companyId);
+        return Mono.fromFuture(table.deleteItem(Key.builder().partitionValue(companyId).build())).then();
     }
 }

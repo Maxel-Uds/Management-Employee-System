@@ -9,4 +9,5 @@ public interface CompanyRepository {
     Mono<Company> findByAlias(String alias);
     Mono<Company> findByCNPJ(String cnpj);
     Mono<Company> save(CompanyItem company);
+    Mono<Void> delete(String companyId);
 }
