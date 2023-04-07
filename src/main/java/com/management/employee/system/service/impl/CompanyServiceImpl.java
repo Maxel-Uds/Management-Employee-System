@@ -2,7 +2,10 @@ package com.management.employee.system.service.impl;
 
 import com.management.employee.system.config.security.TokenAuthentication;
 import com.management.employee.system.controller.request.CompanyCreateRequest;
+import com.management.employee.system.controller.request.CompanyUpdateRequest;
 import com.management.employee.system.controller.response.CompanyCreateResponse;
+import com.management.employee.system.controller.response.CompanyResponse;
+import com.management.employee.system.controller.response.CompanyUpdateResponse;
 import com.management.employee.system.exception.ResourceAlreadyExistsException;
 import com.management.employee.system.mapper.CompanyMapper;
 import com.management.employee.system.repositories.CompanyRepository;
@@ -55,6 +58,21 @@ public class CompanyServiceImpl implements CompanyService {
                 .then(ownerService.deleteOwner(tokenAuthentication.getPrincipal().getPayload().get("ownerId")))
                 .then(authUserService.deleteAuthUser(tokenAuthentication.getPrincipal().getUsername()))
                 .then(emailService.sendDeletionCompanyEmailToOwner(tokenAuthentication.getPrincipal().getPayload()));
+    }
+
+    @Override
+    public Mono<CompanyResponse> getCompanyById(String companyId) {
+        log.info("==== Getting company [{}] ====", companyId);
+        return companyRepository.findById(companyId)
+                .flatMap(company -> Mono.just(companyMapper.toResponse(company)));
+    }
+
+    @Override
+    public Mono<CompanyUpdateResponse> updateCompany(CompanyUpdateRequest request, String companyId) {
+        return companyRepository.findById(companyId)
+                .flatMap(company -> Mono.just(company.setName(request.getName())))
+                .flatMap(company -> companyRepository.updateCompany(new CompanyItem(company)))
+                .flatMap(company -> Mono.just(companyMapper.toUpdateResponse(company)));
     }
 
     private Mono<CompanyCreateRequest> verifyIfAliasExists(CompanyCreateRequest request) {

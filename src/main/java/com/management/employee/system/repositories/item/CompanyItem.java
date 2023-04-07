@@ -37,6 +37,14 @@ public class CompanyItem {
         this.ownerId = ownerId;
     }
 
+    public CompanyItem(Company company) {
+        this.id = company.getId();
+        this.name = company.getName();
+        this.alias = company.getAlias();
+        this.document = company.getDocument();
+        this.ownerId = company.getOwnerId();
+    }
+
     @DynamoDbPartitionKey
     public String getId() {
         return id;

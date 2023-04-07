@@ -64,4 +64,17 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         log.info("==== Deleting company [{}] ====", companyId);
         return Mono.fromFuture(table.deleteItem(Key.builder().partitionValue(companyId).build())).then();
     }
+
+    @Override
+    public Mono<Company> findById(String companyId) {
+        log.info("==== Looking for company [{}] ====", companyId);
+        return Mono.fromFuture(table.getItem(Key.builder().partitionValue(companyId).build()))
+                .flatMap(companyItem -> Mono.just(companyItem.toModel()));
+    }
+
+    @Override
+    public Mono<Company> updateCompany(CompanyItem companyItem) {
+        log.info("===== Updating company [{}] with request [{}] ====", companyItem.getId(), companyItem);
+        return Mono.fromFuture(table.updateItem(companyItem)).thenReturn(companyItem.toModel());
+    }
 }

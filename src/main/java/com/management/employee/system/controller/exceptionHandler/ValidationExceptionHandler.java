@@ -1,6 +1,7 @@
 package com.management.employee.system.controller.exceptionHandler;
 
 import com.management.employee.system.exception.ResourceAlreadyExistsException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class ValidationExceptionHandler {
 
@@ -29,6 +31,7 @@ public class ValidationExceptionHandler {
                                         .build())
                         .collect(Collectors.toList());
 
+        log.error("==== Input error ====");
         return ValidationErrorResponse
                 .builder()
                 .errors(errors)
@@ -57,6 +60,7 @@ public class ValidationExceptionHandler {
     }
 
     private ErrorResponse dataConflictRequestResponseOf(RuntimeException exception, ServerHttpRequest request){
+        log.error("==== Error: [{}]. Path: [{}]. Method: [{}]. Code: [{}] ====", exception.getMessage(), request.getURI().getPath(), request.getMethod(), HttpStatus.CONFLICT.value());
         return ErrorResponse
                 .builder()
                 .message(exception.getMessage())
@@ -68,6 +72,7 @@ public class ValidationExceptionHandler {
     }
 
     private ErrorResponse badRequestResponseOf(RuntimeException exception, ServerHttpRequest request){
+        log.error("==== Error: [{}]. Path: [{}]. Method: [{}]. Code: [{}] ====", exception.getMessage(), request.getURI().getPath(), request.getMethod(), HttpStatus.BAD_REQUEST.value());
         return ErrorResponse
                 .builder()
                 .message(exception.getMessage())
@@ -79,6 +84,7 @@ public class ValidationExceptionHandler {
     }
 
     private ErrorResponse forbiddenRequestResponseOf(AccessDeniedException exception, ServerHttpRequest request) {
+        log.error("==== Error: [{}]. Path: [{}]. Method: [{}]. Code: [{}] ====", exception.getMessage(), request.getURI().getPath(), request.getMethod(), HttpStatus.FORBIDDEN.value());
         return ErrorResponse
                 .builder()
                 .message(exception.getMessage() + ": you don't have sufficient permission to access this endpoint.")

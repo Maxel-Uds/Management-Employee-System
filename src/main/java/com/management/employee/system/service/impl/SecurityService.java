@@ -10,8 +10,15 @@ import java.nio.file.AccessDeniedException;
 public class SecurityService {
 
     public boolean hasDeleteCompanyAccess(TokenAuthentication tokenAuthentication, String companyId) throws AccessDeniedException {
-        return tokenAuthentication.getPrincipal().getScopes().contains(Scopes.FULL_ACCESS.name()) ||
-               tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.DELETE_COMPANY, companyId));
+        return tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.DELETE_COMPANY, companyId));
+    }
+
+    public boolean hasGetCompanyAccess(TokenAuthentication tokenAuthentication, String companyId) throws AccessDeniedException {
+        return tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.GET_COMPANY_DATA, companyId));
+    }
+
+    public boolean hasUpdateCompanyAccess(TokenAuthentication tokenAuthentication, String companyId) throws AccessDeniedException {
+        return tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.UPDATE_COMPANY_DATA, companyId));
     }
 
     private String formatScope(Scopes scope, String id) {

@@ -10,4 +10,6 @@ public interface CompanyRepository {
     Mono<Company> findByCNPJ(String cnpj);
     Mono<Company> save(CompanyItem company);
     Mono<Void> delete(String companyId);
+    Mono<Company> findById(String companyId);
+    Mono<Company> updateCompany(CompanyItem companyItem);
 }

@@ -28,7 +28,7 @@ public class ScopeRepositoryImpl implements ScopeRepository {
     @Override
     public Mono<Scopes> addScope(ScopeUpdateRequest request, AuthUser.UserType userType) {
         log.info("==== Add scopes [{}] to [{}]", request.getScopes(),  userType.name());
-        return findScopesByUserType(userType)
+        return this.findScopesByUserType(userType)
                 .flatMap(scopes -> Mono.just(scopes.addScope(request.getScopes())))
                 .flatMap(scopes -> Mono.fromFuture(table.updateItem(new UserScopeItem(userType.name(), scopes.getScopes()))).then(Mono.just(scopes)));
     }
@@ -36,7 +36,7 @@ public class ScopeRepositoryImpl implements ScopeRepository {
     @Override
     public Mono<Scopes> removeScope(ScopeUpdateRequest request, AuthUser.UserType userType) {
         log.info("==== Remove scopes [{}] of [{}]", request.getScopes(),  userType.name());
-        return findScopesByUserType(userType)
+        return this.findScopesByUserType(userType)
                 .flatMap(scopes -> Mono.just(scopes.removeScope(request.getScopes())))
                 .flatMap(scopes -> Mono.fromFuture(table.updateItem(new UserScopeItem(userType.name(), scopes.getScopes()))).then(Mono.just(scopes)));
     }
