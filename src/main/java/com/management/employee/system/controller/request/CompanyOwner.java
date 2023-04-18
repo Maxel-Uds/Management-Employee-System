@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Pattern;
 @Accessors(chain = true)
 public class CompanyOwner {
 
+    @Length(min = 5, max = 20, message = "O nome deve estar entre 5 e 20 caracteres")
     @NotEmpty(message = "O nome do owner é obrigatório")
     private String name;
 

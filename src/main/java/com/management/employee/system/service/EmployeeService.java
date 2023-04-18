@@ -9,5 +9,5 @@ import java.util.Set;
 public interface EmployeeService {
 
     Mono<EmployeeCreateResponse> createEmployee(EmployeeCreateRequest request);
-    Mono<Set<String>> formatEmployeeScopes(String companyId);
+    Mono<Set<String>> formatEmployeeScopes(String companyId, String employeeId);
 }

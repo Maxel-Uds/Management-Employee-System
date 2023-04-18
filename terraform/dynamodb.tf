@@ -46,7 +46,8 @@ resource "aws_dynamodb_table_item" "employee_scopes" {
   hash_key   = aws_dynamodb_table.app_scopes.hash_key
 
   item = jsonencode({
-    userType = {"S": "EMPLOYEE"}
+    userType = {"S": "EMPLOYEE"},
+    scopes = {"SS": ["getData:employeeId:employee"]}
   })
 }
 

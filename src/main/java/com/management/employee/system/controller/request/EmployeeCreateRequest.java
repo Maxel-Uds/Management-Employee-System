@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
@@ -14,9 +16,11 @@ import javax.validation.constraints.Pattern;
 @Accessors(chain = true)
 public class EmployeeCreateRequest {
 
+    @Length(min = 5, max = 20, message = "O nome deve estar entre 5 e 20 caracteres")
     @NotEmpty(message = "O Nome do funcionário é obrigatório")
     private String name;
 
+    @Email
     @NotEmpty(message = "O email do funcionário é obrigatório")
     private String email;
 
@@ -27,6 +31,7 @@ public class EmployeeCreateRequest {
     @NotEmpty(message = "O id da empresa do funcionário é obrigatório")
     private String companyId;
 
+    @Length(min = 5, max = 15, message = "A senha deve estar entre 5 e 15 caracteres")
     @NotEmpty(message = "A senha do funcionário não pode ser nula")
     private String password;
 }

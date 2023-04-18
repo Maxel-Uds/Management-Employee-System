@@ -48,7 +48,7 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
         }
 
         return Mono.just(authUser.getUserType().equals(AuthUser.UserType.ADMIN))
-                .flatMap(isAdmin -> isAdmin ? ownerService.formatOwnerScopes(authUser.getPayload().get("companyId")) : employeeService.formatEmployeeScopes(authUser.getPayload().get("companyId")))
+                .flatMap(isAdmin -> isAdmin ? ownerService.formatOwnerScopes(authUser.getPayload().get("companyId")) : employeeService.formatEmployeeScopes(authUser.getPayload().get("companyId"), authUser.getPayload().get("employeeId")))
                 .flatMap(scopesFormatedFromTable -> {
                     return !authUser.getScopes().equals(scopesFormatedFromTable) ? this.updateAuthUserScopes(scopesFormatedFromTable, authUser) : Mono.defer(() -> {
                         log.info("===== Scopes of user [{}] already updated ====", authUser.getId());

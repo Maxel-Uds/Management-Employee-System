@@ -49,9 +49,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Mono<Set<String>> formatEmployeeScopes(String companyId) {
+    public Mono<Set<String>> formatEmployeeScopes(String companyId, String employeeId) {
         Map<String, String> ids = new HashMap<>() {{
             put("companyId", companyId);
+            put("employeeId", employeeId);
         }};
 
         return this.scopesService.findByUserType(AuthUser.UserType.EMPLOYEE)
@@ -68,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private Mono<Employee> createEmployeeAuthUser(Employee employee, CompanyResponse company) {
         log.info("==== Start creation of auth user to employee [{}] ====", employee.getId());
-        return this.formatEmployeeScopes(company.getId())
+        return this.formatEmployeeScopes(company.getId(), employee.getId())
                 .zipWhen(scopes -> this.createPayload(company, employee))
                 .flatMap(scopesAndPayload -> Mono.just(new AuthUserItem(employee.setUsername(String.format("%s-%s", company.getAlias(), employee.getDocument())), scopesAndPayload.getT1(), encoder.encode(employee.getPassword()), scopesAndPayload.getT2())))
                 .flatMap(this.authUserService::createAuthUser)

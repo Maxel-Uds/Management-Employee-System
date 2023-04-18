@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -27,7 +24,7 @@ public class EmployeeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@securityService.hasCreateEmployeeAccess(#tokenAuthentication, #request.getCompanyId())")
-    Mono<EmployeeCreateResponse> createEmployee(@Valid EmployeeCreateRequest request, TokenAuthentication tokenAuthentication) {
+    Mono<EmployeeCreateResponse> createEmployee(@RequestBody @Valid EmployeeCreateRequest request, TokenAuthentication tokenAuthentication) {
         return employeeService.createEmployee(request)
                 .doFirst(() -> log.info("==== Creating employee to company [{}] ====", request.getCompanyId()))
                 .doOnSuccess(response -> log.info("==== Employee create with success ===="))
