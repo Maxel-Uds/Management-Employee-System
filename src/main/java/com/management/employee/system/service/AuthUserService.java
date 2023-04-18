@@ -12,4 +12,5 @@ public interface AuthUserService {
     Mono<AuthUser> createAuthUser(AuthUserItem authUser);
     Mono<AuthUser> updateAuthUserScopes(AuthUser authUser);
     Mono<Void> deleteAuthUser(String userName);
+    Mono<Boolean> checkIfUserExistsByUsername(String username);
 }

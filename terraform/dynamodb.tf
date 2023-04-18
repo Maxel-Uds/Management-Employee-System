@@ -56,7 +56,7 @@ resource "aws_dynamodb_table_item" "admin_scopes" {
 
   item = jsonencode({
     userType = {"S": "ADMIN"},
-    scopes = {"SS": ["delete:companyId:company","getData:companyId:company", "updateData:companyId:company"]}
+    scopes = {"SS": ["delete:companyId:company","getData:companyId:company", "updateData:companyId:company", "createData:companyId:employee"]}
   })
 }
 
@@ -144,6 +144,45 @@ resource "aws_dynamodb_table" "owner" {
 
   global_secondary_index  {
     name = "owner_document_index"
+    hash_key = "document"
+    write_capacity = var.read_capacity
+    read_capacity = var.write_capacity
+    projection_type = "ALL"
+  }
+}
+
+resource "aws_dynamodb_table" "employee" {
+  provider           = aws.us-east-1
+  name               = "employee"
+  hash_key           = "id"
+  read_capacity      = var.read_capacity
+  write_capacity     = var.write_capacity
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  attribute {
+    name = "document"
+    type = "S"
+  }
+
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  global_secondary_index  {
+    name = "employee_email_index"
+    hash_key = "email"
+    write_capacity = var.read_capacity
+    read_capacity = var.write_capacity
+    projection_type = "ALL"
+  }
+
+  global_secondary_index  {
+    name = "employee_document_index"
     hash_key = "document"
     write_capacity = var.read_capacity
     read_capacity = var.write_capacity

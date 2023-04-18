@@ -1,6 +1,7 @@
 package com.management.employee.system.repositories.item;
 
 import com.management.employee.system.model.AuthUser;
+import com.management.employee.system.model.Employee;
 import com.management.employee.system.model.Owner;
 import com.management.employee.system.repositories.converter.CustomConverterProvider;
 import lombok.ToString;
@@ -48,6 +49,16 @@ public class AuthUserItem {
         this.userType = AuthUser.UserType.ADMIN;
         this.document = owner.getDocument();
         this.username = owner.getUsername();
+        this.password = pass;
+        this.scopes = scopes;
+        this.payload = payload;
+    }
+
+    public AuthUserItem(Employee employee, Set<String> scopes, String pass, Map<String, String> payload) {
+        this.id = UUID.randomUUID().toString();
+        this.userType = AuthUser.UserType.EMPLOYEE;
+        this.document = employee.getDocument();
+        this.username = employee.getUsername();
         this.password = pass;
         this.scopes = scopes;
         this.payload = payload;

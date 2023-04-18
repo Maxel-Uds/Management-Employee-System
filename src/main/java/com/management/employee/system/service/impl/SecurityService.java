@@ -9,6 +9,10 @@ import java.nio.file.AccessDeniedException;
 @Service
 public class SecurityService {
 
+    public boolean hasCreateEmployeeAccess(TokenAuthentication tokenAuthentication, String companyId) {
+        return tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.CREATE_EMPLOYEE_ACCESS, companyId));
+    }
+
     public boolean hasDeleteCompanyAccess(TokenAuthentication tokenAuthentication, String companyId) throws AccessDeniedException {
         return tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.DELETE_COMPANY, companyId));
     }

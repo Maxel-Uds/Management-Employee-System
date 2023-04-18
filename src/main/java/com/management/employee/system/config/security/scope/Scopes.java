@@ -10,7 +10,8 @@ public enum Scopes {
     FULL_ACCESS("fullAccess:application"),
     DELETE_COMPANY("delete:companyId:company"),
     GET_COMPANY_DATA("getData:companyId:company"),
-    UPDATE_COMPANY_DATA("updateData:companyId:company");
+    UPDATE_COMPANY_DATA("updateData:companyId:company"),
+    CREATE_EMPLOYEE_ACCESS("createData:companyId:employee");
 
     private final String scope;
 }

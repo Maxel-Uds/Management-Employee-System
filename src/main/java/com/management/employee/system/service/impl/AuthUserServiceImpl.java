@@ -42,4 +42,11 @@ public class AuthUserServiceImpl implements AuthUserService {
         return this.findByUserName(userName)
                 .flatMap(userDetails -> this.authUserRepository.delete(((AuthUser) userDetails).getId()));
     }
+
+    @Override
+    public Mono<Boolean> checkIfUserExistsByUsername(String username) {
+        log.info("==== Looking for user with username [{}] ====", username);
+        return authUserRepository.findByUserName(username)
+                .hasElement();
+    }
 }

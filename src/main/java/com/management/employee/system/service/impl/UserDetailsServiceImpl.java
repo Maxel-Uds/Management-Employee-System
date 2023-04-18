@@ -2,6 +2,7 @@ package com.management.employee.system.service.impl;
 
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.service.AuthUserService;
+import com.management.employee.system.service.EmployeeService;
 import com.management.employee.system.service.OwnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,19 @@ import java.util.Set;
 public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
 
     private final AuthUserService authUserService;
+    private final EmployeeService employeeService;
     private final OwnerService ownerService;
     private final String clientId;
 
     @Autowired
     public UserDetailsServiceImpl(AuthUserService authUserService,
                                   OwnerService ownerService,
+                                  EmployeeService employeeService,
                                   @Value("${app.auth-client.user}") String clientId) {
         this.authUserService = authUserService;
         this.clientId = clientId;
         this.ownerService = ownerService;
+        this.employeeService = employeeService;
     }
 
     @Override
@@ -43,9 +47,8 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
             return Mono.just(authUser);
         }
 
-        //TODO: Substituir o Mono.empty da linha 50 pela chamada da função da Employee service para formatação dos scopes
         return Mono.just(authUser.getUserType().equals(AuthUser.UserType.ADMIN))
-                .flatMap(isAdmin -> isAdmin ? ownerService.formatOwnerScopes(authUser.getPayload().get("companyId")) : Mono.empty())
+                .flatMap(isAdmin -> isAdmin ? ownerService.formatOwnerScopes(authUser.getPayload().get("companyId")) : employeeService.formatEmployeeScopes(authUser.getPayload().get("companyId")))
                 .flatMap(scopesFormatedFromTable -> {
                     return !authUser.getScopes().equals(scopesFormatedFromTable) ? this.updateAuthUserScopes(scopesFormatedFromTable, authUser) : Mono.defer(() -> {
                         log.info("===== Scopes of user [{}] already updated ====", authUser.getId());
