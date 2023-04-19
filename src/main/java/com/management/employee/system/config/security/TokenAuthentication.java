@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -25,18 +24,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
         if (bearerToken != null)
             this.setAuthenticated(true);
 
-        this.authUser = AuthUser.builder()
-                .username(decodedJWT.getClaim("sub").asString())
-                .scopes(Arrays.stream(decodedJWT.getClaim("scope").asArray(String.class)).collect(Collectors.toSet()))
-                .payload(new HashMap<>() {{
-                    put("companyAlias", (String) decodedJWT.getClaim("payload").asMap().get("companyAlias"));
-                    put("companyId", (String) decodedJWT.getClaim("payload").asMap().get("companyId"));
-                    put("companyName", (String) decodedJWT.getClaim("payload").asMap().get("companyName"));
-                    put("ownerId", (String) decodedJWT.getClaim("payload").asMap().get("ownerId"));
-                    put("ownerEmail", (String) decodedJWT.getClaim("payload").asMap().get("ownerEmail"));
-                    put("ownerName", (String) decodedJWT.getClaim("payload").asMap().get("ownerName"));
-                }})
-                .build();
+        this.authUser = Objects.nonNull((String) decodedJWT.getClaim("payload").asMap().get("ownerId")) ? this.buildOwnerAuthUser(decodedJWT) : buildEmployeeAuthUser(decodedJWT);
     }
 
     public TokenAuthentication(String bearerToken) {
@@ -58,5 +46,35 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), bearerToken);
+    }
+
+    private AuthUser buildOwnerAuthUser(DecodedJWT decodedJWT) {
+        return AuthUser.builder()
+                .username(decodedJWT.getClaim("sub").asString())
+                .scopes(Arrays.stream(decodedJWT.getClaim("scope").asArray(String.class)).collect(Collectors.toSet()))
+                .payload(new HashMap<>() {{
+                    put("companyAlias", (String) decodedJWT.getClaim("payload").asMap().get("companyAlias"));
+                    put("companyId", (String) decodedJWT.getClaim("payload").asMap().get("companyId"));
+                    put("companyName", (String) decodedJWT.getClaim("payload").asMap().get("companyName"));
+                    put("ownerId", (String) decodedJWT.getClaim("payload").asMap().get("ownerId"));
+                    put("ownerEmail", (String) decodedJWT.getClaim("payload").asMap().get("ownerEmail"));
+                    put("ownerName", (String) decodedJWT.getClaim("payload").asMap().get("ownerName"));
+                }})
+                .build();
+    }
+
+    private AuthUser buildEmployeeAuthUser(DecodedJWT decodedJWT) {
+        return AuthUser.builder()
+                .username(decodedJWT.getClaim("sub").asString())
+                .scopes(Arrays.stream(decodedJWT.getClaim("scope").asArray(String.class)).collect(Collectors.toSet()))
+                .payload(new HashMap<>() {{
+                    put("companyAlias", (String) decodedJWT.getClaim("payload").asMap().get("companyAlias"));
+                    put("companyId", (String) decodedJWT.getClaim("payload").asMap().get("companyId"));
+                    put("companyName", (String) decodedJWT.getClaim("payload").asMap().get("companyName"));
+                    put("employeeId", (String) decodedJWT.getClaim("payload").asMap().get("employeeId"));
+                    put("employeeEmail", (String) decodedJWT.getClaim("payload").asMap().get("employeeEmail"));
+                    put("employeeName", (String) decodedJWT.getClaim("payload").asMap().get("employeeName"));
+                }})
+                .build();
     }
 }

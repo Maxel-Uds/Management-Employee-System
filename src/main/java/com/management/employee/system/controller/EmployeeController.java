@@ -3,6 +3,7 @@ package com.management.employee.system.controller;
 import com.management.employee.system.config.security.TokenAuthentication;
 import com.management.employee.system.controller.request.EmployeeCreateRequest;
 import com.management.employee.system.controller.response.EmployeeCreateResponse;
+import com.management.employee.system.controller.response.EmployeeResponse;
 import com.management.employee.system.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,5 +31,12 @@ public class EmployeeController {
                 .doOnSuccess(response -> log.info("==== Employee create with success ===="))
                 .doOnError(throwable -> log.error("==== An error occurred and was not possible create employee. Error: [{}]", throwable.getMessage()))
                 .doFinally(signalType -> log.info("==== Done create employee process with signal type [{}] ====", signalType));
+    }
+
+    @GetMapping("/{employeeId}/company/{companyId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@securityService.hasGetEmployeeDataAccess(#tokenAuthentication, #companyId, #employeeId)")
+    Mono<EmployeeResponse> getEmployeeDataById(@PathVariable String employeeId, @PathVariable String companyId, TokenAuthentication tokenAuthentication) {
+        return Mono.empty();
     }
 }

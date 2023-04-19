@@ -57,7 +57,7 @@ resource "aws_dynamodb_table_item" "admin_scopes" {
 
   item = jsonencode({
     userType = {"S": "ADMIN"},
-    scopes = {"SS": ["delete:companyId:company","getData:companyId:company", "updateData:companyId:company", "createData:companyId:employee"]}
+    scopes = {"SS": ["delete:companyId:company","getData:companyId:company", "updateData:companyId:company", "createData:companyId:employee", "getEmployeeData:companyId:company"]}
   })
 }
 
