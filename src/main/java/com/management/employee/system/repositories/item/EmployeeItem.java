@@ -18,7 +18,7 @@ public class EmployeeItem {
 
     public static final String TABLE_NAME = "employee";
     public static final String INDEX_DOCUMENT = "employee_document_index";
-    public static final String INDEX_EMAIL = "employee_email_index";
+    public static final String INDEX_COMPANY_ID = "employee_companyId_index";
 
     private String id;
     private String name;
@@ -56,7 +56,6 @@ public class EmployeeItem {
         this.name = name;
     }
 
-    @DynamoDbSecondaryPartitionKey(indexNames = INDEX_EMAIL)
     public String getEmail() {
         return email;
     }
@@ -82,6 +81,7 @@ public class EmployeeItem {
         this.username = username;
     }
 
+    @DynamoDbSecondaryPartitionKey(indexNames = INDEX_COMPANY_ID)
     public String getCompanyId() {
         return companyId;
     }
@@ -98,6 +98,7 @@ public class EmployeeItem {
                 .document(this.document)
                 .name(this.name)
                 .companyId(this.companyId)
+                .username(this.username)
                 .build();
     }
 }

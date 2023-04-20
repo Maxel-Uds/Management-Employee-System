@@ -165,26 +165,13 @@ resource "aws_dynamodb_table" "employee" {
   }
 
   attribute {
-    name = "document"
-    type = "S"
-  }
-
-  attribute {
-    name = "email"
+    name = "companyId"
     type = "S"
   }
 
   global_secondary_index  {
-    name = "employee_email_index"
-    hash_key = "email"
-    write_capacity = var.read_capacity
-    read_capacity = var.write_capacity
-    projection_type = "ALL"
-  }
-
-  global_secondary_index  {
-    name = "employee_document_index"
-    hash_key = "document"
+    name = "employee_companyId_index"
+    hash_key = "companyId"
     write_capacity = var.read_capacity
     read_capacity = var.write_capacity
     projection_type = "ALL"

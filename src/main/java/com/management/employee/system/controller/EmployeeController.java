@@ -35,8 +35,12 @@ public class EmployeeController {
 
     @GetMapping("/{employeeId}/company/{companyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@securityService.hasGetEmployeeDataAccess(#tokenAuthentication, #companyId, #employeeId)")
+    @PreAuthorize("@securityService.hasGetEmployeeDataAccess(#tokenAuthentication, #companyId)")
     Mono<EmployeeResponse> getEmployeeDataById(@PathVariable String employeeId, @PathVariable String companyId, TokenAuthentication tokenAuthentication) {
-        return Mono.empty();
+        return employeeService.findEmployeeById(companyId, employeeId)
+                .doFirst(() -> log.info("==== Getting employee [{}] of company [{}] ====", employeeId, companyId))
+                .doOnSuccess(response -> log.info("==== Employee found with success ===="))
+                .doOnError(throwable -> log.error("==== An error occurred and was not possible found employee. Error: [{}]", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done get employee process with signal type [{}] ====", signalType));
     }
 }

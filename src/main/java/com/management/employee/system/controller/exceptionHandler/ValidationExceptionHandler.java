@@ -1,6 +1,7 @@
 package com.management.employee.system.controller.exceptionHandler;
 
 import com.management.employee.system.exception.ResourceAlreadyExistsException;
+import com.management.employee.system.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -57,6 +58,24 @@ public class ValidationExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ErrorResponse resourceAlreadyExistsException(ResourceAlreadyExistsException exception, ServerHttpRequest request){
         return dataConflictRequestResponseOf(exception, request);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ErrorResponse resourceNotFoundException(ResourceNotFoundException exception, ServerHttpRequest request){
+        return resourceNotFoundRequestResponseOf(exception, request);
+    }
+
+    private ErrorResponse resourceNotFoundRequestResponseOf(RuntimeException exception, ServerHttpRequest request){
+        log.error("==== Error: [{}]. Path: [{}]. Method: [{}]. Code: [{}] ====", exception.getMessage(), request.getURI().getPath(), request.getMethod(), HttpStatus.NOT_FOUND.value());
+        return ErrorResponse
+                .builder()
+                .message(exception.getMessage())
+                .status(HttpStatus.NOT_FOUND.value())
+                .timestamp(System.currentTimeMillis())
+                .path(request.getURI().getPath())
+                .error(HttpStatus.NOT_FOUND.name().toLowerCase())
+                .build();
     }
 
     private ErrorResponse dataConflictRequestResponseOf(RuntimeException exception, ServerHttpRequest request){

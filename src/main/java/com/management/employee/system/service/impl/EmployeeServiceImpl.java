@@ -3,7 +3,9 @@ package com.management.employee.system.service.impl;
 import com.management.employee.system.controller.request.EmployeeCreateRequest;
 import com.management.employee.system.controller.response.CompanyResponse;
 import com.management.employee.system.controller.response.EmployeeCreateResponse;
+import com.management.employee.system.controller.response.EmployeeResponse;
 import com.management.employee.system.exception.ResourceAlreadyExistsException;
+import com.management.employee.system.exception.ResourceNotFoundException;
 import com.management.employee.system.mapper.EmployeeMapper;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.model.Employee;
@@ -45,7 +47,20 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .zipWhen(company -> employeeRepository.save(new EmployeeItem(request, String.format("%s-%s", company.getAlias(), request.getDocument()))))
                 .flatMap(employeeAndCompany -> Mono.just(employeeAndCompany.getT2().setPassword(request.getPassword())).thenReturn(employeeAndCompany))
                 .flatMap(employeeAndCompany -> this.createEmployeeAuthUser(employeeAndCompany.getT2(), employeeAndCompany.getT1()))
-                .flatMap(employee -> Mono.just(employeeMapper.toResponse(employee)));
+                .flatMap(employee -> Mono.just(employeeMapper.toEmployeeCreateResponse(employee)));
+    }
+
+    @Override
+    public Mono<EmployeeResponse> findEmployeeById(String companyId, String employeeId) {
+        log.info("=== Looking for employee with id [{}] ====", employeeId);
+        return employeeRepository.getAllEmployeesByCompanyId(companyId)
+                .filter(employee -> employee.getId().equals(employeeId))
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.info("=== Not found any employee with id [{}] ====", employeeId);
+                    return Mono.error(new ResourceNotFoundException("Nenhum funcionário foi encontrado com o id informado"));
+                }))
+                .last()
+                .flatMap(employee -> Mono.just(employeeMapper.toEmployeeResponse(employee)));
     }
 
     @Override
