@@ -43,4 +43,15 @@ public class EmployeeController {
                 .doOnError(throwable -> log.error("==== An error occurred and was not possible found employee. Error: [{}]", throwable.getMessage()))
                 .doFinally(signalType -> log.info("==== Done get employee process with signal type [{}] ====", signalType));
     }
+
+    @GetMapping("/{employeeId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@securityService.hasGetSelfEmployeeDataAccess(#tokenAuthentication, #employeeId)")
+    Mono<EmployeeResponse> getSelfEmployeeDataById(@PathVariable String employeeId, TokenAuthentication tokenAuthentication) {
+        return employeeService.getSelfEmployee(employeeId)
+                .doFirst(() -> log.info("==== Getting employee [{}] ====", employeeId))
+                .doOnSuccess(response -> log.info("==== Employee found with success ===="))
+                .doOnError(throwable -> log.error("==== An error occurred and was not possible found employee. Error: [{}]", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done get employee process with signal type [{}] ====", signalType));
+    }
 }

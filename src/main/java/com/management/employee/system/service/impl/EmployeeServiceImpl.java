@@ -77,6 +77,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                 }).collect(Collectors.toSet())));
     }
 
+    @Override
+    public Mono<EmployeeResponse> getSelfEmployee(String employeeId) {
+        log.info("==== Looking for employee with id [{}] ====", employeeId);
+        return this.employeeRepository.findById(employeeId)
+                .flatMap(employee -> Mono.just(employeeMapper.toEmployeeResponse(employee)));
+    }
+
     private Mono<CompanyResponse> checkIfUserAlreadyExists(CompanyResponse company, EmployeeCreateRequest request) {
         return authUserService.checkIfUserExistsByUsername(String.format("%s-%s", company.getAlias(), request.getDocument()))
                 .flatMap(isUserExists -> isUserExists ? Mono.error(new ResourceAlreadyExistsException("Este usuário já pertence a essa empresa")) : Mono.just(company));

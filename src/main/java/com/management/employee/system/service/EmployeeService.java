@@ -12,4 +12,5 @@ public interface EmployeeService {
     Mono<EmployeeCreateResponse> createEmployee(EmployeeCreateRequest request);
     Mono<Set<String>> formatEmployeeScopes(String companyId, String employeeId);
     Mono<EmployeeResponse> findEmployeeById(String companyId, String employeeId);
+    Mono<EmployeeResponse> getSelfEmployee(String employeeId);
 }

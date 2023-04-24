@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PagePublisher;
 
@@ -41,5 +42,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         return Mono.just(PagePublisher.create(item).items())
                 .flatMapMany(Flux::mergeSequential)
                 .map(EmployeeItem::toModel);
+    }
+
+    @Override
+    public Mono<Employee> findById(String employeeId) {
+        return Mono.fromFuture(table.getItem(Key.builder().partitionValue(employeeId).build())).flatMap(employeeItem -> Mono.just(employeeItem.toModel()));
     }
 }
