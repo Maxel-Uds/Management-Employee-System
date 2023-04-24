@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -82,6 +83,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("==== Looking for employee with id [{}] ====", employeeId);
         return this.employeeRepository.findById(employeeId)
                 .flatMap(employee -> Mono.just(employeeMapper.toEmployeeResponse(employee)));
+    }
+
+    @Override
+    public Flux<EmployeeResponse> getAllEmployeesByCompanyId(String companyId) {
+        log.info("==== Looking for employees of company [{}] ====", companyId);
+        return employeeRepository.getAllEmployeesByCompanyId(companyId)
+                .map(employeeMapper::toEmployeeResponse);
     }
 
     private Mono<CompanyResponse> checkIfUserAlreadyExists(CompanyResponse company, EmployeeCreateRequest request) {

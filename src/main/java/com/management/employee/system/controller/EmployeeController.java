@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -53,5 +54,15 @@ public class EmployeeController {
                 .doOnSuccess(response -> log.info("==== Employee found with success ===="))
                 .doOnError(throwable -> log.error("==== An error occurred and was not possible found employee. Error: [{}]", throwable.getMessage()))
                 .doFinally(signalType -> log.info("==== Done get employee process with signal type [{}] ====", signalType));
+    }
+
+    @GetMapping("/get-all-of/{companyId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@securityService.hasGetEmployeeDataAccess(#tokenAuthentication, #companyId)")
+    Flux<EmployeeResponse> getAllEmployeesByCompanyId(TokenAuthentication tokenAuthentication, @PathVariable String companyId) {
+        return employeeService.getAllEmployeesByCompanyId(companyId)
+                .doFirst(() -> log.info("==== Getting all employees of company [{}] ====", companyId))
+                .doOnError(throwable -> log.error("==== An error occurred and was not possible found employees. Error: [{}]", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done get employees process with signal type [{}] ====", signalType));
     }
 }
