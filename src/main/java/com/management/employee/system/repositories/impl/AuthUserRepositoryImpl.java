@@ -45,7 +45,7 @@ public class AuthUserRepositoryImpl implements AuthUserRepository {
     }
 
     @Override
-    public Mono<AuthUser> updateAuthUserScopes(AuthUser authUser) {
+    public Mono<AuthUser> updateAuthUser(AuthUser authUser) {
         return Mono.fromFuture(table.updateItem(new AuthUserItem(authUser)))
                 .flatMap(authUserItem -> Mono.just(authUserItem.toModel()));
     }

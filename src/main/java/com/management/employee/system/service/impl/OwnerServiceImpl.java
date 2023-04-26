@@ -82,7 +82,6 @@ public class OwnerServiceImpl implements OwnerService {
     private Mono<Map<String, String>> createPayload(Company company, Owner owner) {
         return Mono.just(new LinkedHashMap<>() {{
             put("companyId", company.getId());
-            put("companyName", company.getName());
             put("companyAlias", company.getAlias());
             put("ownerId", owner.getId());
             put("ownerEmail", owner.getEmail());

@@ -32,9 +32,9 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     @Override
-    public Mono<AuthUser> updateAuthUserScopes(AuthUser authUser) {
-        log.info("==== Updating scopes of user [{}] with scopes [{}] ====", authUser.getId(), authUser.getScopes());
-        return this.authUserRepository.updateAuthUserScopes(authUser);
+    public Mono<AuthUser> updateAuthUser(AuthUser authUser) {
+        log.info("==== Updating auth user [{}] with request [{}] ====", authUser.getId(), authUser);
+        return this.authUserRepository.updateAuthUser(authUser);
     }
 
     @Override

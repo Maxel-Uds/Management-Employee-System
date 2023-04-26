@@ -28,8 +28,14 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
+    public Mono<Employee> update(EmployeeItem employeeItem) {
+        log.info("==== Updating employee [{}] ====", employeeItem);
+        return Mono.fromFuture(table.updateItem(employeeItem)).thenReturn(employeeItem.toModel());
+    }
+
+    @Override
     public Mono<Employee> save(EmployeeItem employeeItem) {
-        log.info("====Saving employee [{}] ====", employeeItem);
+        log.info("==== Saving employee [{}] ====", employeeItem);
         return Mono.fromFuture(table.putItem(employeeItem)).thenReturn(employeeItem.toModel());
     }
 

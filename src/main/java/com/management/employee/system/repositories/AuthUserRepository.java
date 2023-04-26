@@ -9,7 +9,7 @@ public interface AuthUserRepository {
 
     Mono<AuthUser> save(AuthUserItem authUser);
     Mono<UserDetails> findByUserName(String userName);
-    Mono<AuthUser> updateAuthUserScopes(AuthUser authUser);
+    Mono<AuthUser> updateAuthUser(AuthUser authUser);
     Mono<Void> delete(String authUserId);
 
 }

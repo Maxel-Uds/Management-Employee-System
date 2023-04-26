@@ -47,7 +47,7 @@ resource "aws_dynamodb_table_item" "employee_scopes" {
 
   item = jsonencode({
     userType = {"S": "EMPLOYEE"},
-    scopes = {"SS": ["getData:employeeId:employee"]}
+    scopes = {"SS": ["getData:employeeId:employee", "updateData:employeeId:employee"]}
   })
 }
 

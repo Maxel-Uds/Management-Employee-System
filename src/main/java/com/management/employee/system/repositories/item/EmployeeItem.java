@@ -39,6 +39,15 @@ public class EmployeeItem {
         this.companyId = request.getCompanyId();
     }
 
+    public EmployeeItem(Employee employee) {
+        this.id = employee.getId();
+        this.name = employee.getName();
+        this.email = employee.getEmail();
+        this.document = employee.getDocument();
+        this.username = employee.getUsername();
+        this.companyId = employee.getCompanyId();
+    }
+
     @DynamoDbPartitionKey
     public String getId() {
         return id;

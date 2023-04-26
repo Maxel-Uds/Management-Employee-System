@@ -13,7 +13,8 @@ public enum Scopes {
     UPDATE_COMPANY_DATA("updateData:companyId:company"),
     CREATE_EMPLOYEE_ACCESS("createData:companyId:employee"),
     OWNER_GET_EMPLOYEE_ACCESS("getEmployeeData:companyId:company"),
-    GET_SELF_EMPLOYEE_ACCESS("getData:employeeId:employee");
+    GET_SELF_EMPLOYEE_ACCESS("getData:employeeId:employee"),
+    UPDATE_EMPLOYEE_ACCESS("updateData:employeeId:employee");
 
     private final String scope;
 }

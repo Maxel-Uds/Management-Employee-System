@@ -1,6 +1,7 @@
 package com.management.employee.system.service.impl;
 
 import com.management.employee.system.controller.request.EmployeeCreateRequest;
+import com.management.employee.system.controller.request.EmployeeUpdateRequest;
 import com.management.employee.system.controller.response.CompanyResponse;
 import com.management.employee.system.controller.response.EmployeeCreateResponse;
 import com.management.employee.system.controller.response.EmployeeResponse;
@@ -92,6 +93,27 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(employeeMapper::toEmployeeResponse);
     }
 
+    @Override
+    public Mono<EmployeeResponse> updateEmployeeDataById(String employeeId, EmployeeUpdateRequest request) {
+        log.info("==== Updating employee [{}] ====", employeeId);
+        return employeeRepository.findById(employeeId)
+                .map(employee -> employee.setName(request.getName()).setEmail(request.getEmail()))
+                .map(EmployeeItem::new)
+                .flatMap(employeeRepository::update)
+                .map(employeeMapper::toEmployeeResponse)
+                .flatMap(employeeResponse -> {
+                    return authUserService.findByUserName(employeeResponse.getUsername())
+                                    .map(userDetails -> (AuthUser) userDetails)
+                                    .map(authUser -> {
+                                        authUser.getPayload().put("employeeEmail", request.getEmail());
+                                        authUser.getPayload().put("employeeName", request.getName());
+                                        return authUser;
+                                    })
+                                    .flatMap(authUserService::updateAuthUser)
+                                    .thenReturn(employeeResponse);
+                });
+    }
+
     private Mono<CompanyResponse> checkIfUserAlreadyExists(CompanyResponse company, EmployeeCreateRequest request) {
         return authUserService.checkIfUserExistsByUsername(String.format("%s-%s", company.getAlias(), request.getDocument()))
                 .flatMap(isUserExists -> isUserExists ? Mono.error(new ResourceAlreadyExistsException("Este usuário já pertence a essa empresa")) : Mono.just(company));
@@ -109,7 +131,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private Mono<Map<String, String>> createPayload(CompanyResponse company, Employee employee) {
         return Mono.just(new LinkedHashMap<>() {{
             put("companyId", company.getId());
-            put("companyName", company.getName());
             put("companyAlias", company.getAlias());
             put("employeeId", employee.getId());
             put("employeeEmail", employee.getEmail());

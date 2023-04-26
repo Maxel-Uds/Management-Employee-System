@@ -59,6 +59,6 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
 
     private Mono<AuthUser> updateAuthUserScopes(Set<String> scopes, AuthUser authUser) {
         log.info("==== Updating auth user scopes ====");
-        return this.authUserService.updateAuthUserScopes(authUser.setScopes(scopes));
+        return this.authUserService.updateAuthUser(authUser.setScopes(scopes));
     }
 }

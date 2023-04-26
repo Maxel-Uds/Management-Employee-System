@@ -24,7 +24,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
         if (bearerToken != null)
             this.setAuthenticated(true);
 
-        this.authUser = Objects.nonNull((String) decodedJWT.getClaim("payload").asMap().get("ownerId")) ? this.buildOwnerAuthUser(decodedJWT) : buildEmployeeAuthUser(decodedJWT);
+        this.authUser = Objects.nonNull(decodedJWT.getClaim("payload").asMap().get("ownerId")) ? this.buildOwnerAuthUser(decodedJWT) : buildEmployeeAuthUser(decodedJWT);
     }
 
     public TokenAuthentication(String bearerToken) {
@@ -55,7 +55,6 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
                 .payload(new HashMap<>() {{
                     put("companyAlias", (String) decodedJWT.getClaim("payload").asMap().get("companyAlias"));
                     put("companyId", (String) decodedJWT.getClaim("payload").asMap().get("companyId"));
-                    put("companyName", (String) decodedJWT.getClaim("payload").asMap().get("companyName"));
                     put("ownerId", (String) decodedJWT.getClaim("payload").asMap().get("ownerId"));
                     put("ownerEmail", (String) decodedJWT.getClaim("payload").asMap().get("ownerEmail"));
                     put("ownerName", (String) decodedJWT.getClaim("payload").asMap().get("ownerName"));
@@ -70,7 +69,6 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
                 .payload(new HashMap<>() {{
                     put("companyAlias", (String) decodedJWT.getClaim("payload").asMap().get("companyAlias"));
                     put("companyId", (String) decodedJWT.getClaim("payload").asMap().get("companyId"));
-                    put("companyName", (String) decodedJWT.getClaim("payload").asMap().get("companyName"));
                     put("employeeId", (String) decodedJWT.getClaim("payload").asMap().get("employeeId"));
                     put("employeeEmail", (String) decodedJWT.getClaim("payload").asMap().get("employeeEmail"));
                     put("employeeName", (String) decodedJWT.getClaim("payload").asMap().get("employeeName"));

@@ -2,6 +2,7 @@ package com.management.employee.system.controller;
 
 import com.management.employee.system.config.security.TokenAuthentication;
 import com.management.employee.system.controller.request.EmployeeCreateRequest;
+import com.management.employee.system.controller.request.EmployeeUpdateRequest;
 import com.management.employee.system.controller.response.EmployeeCreateResponse;
 import com.management.employee.system.controller.response.EmployeeResponse;
 import com.management.employee.system.service.EmployeeService;
@@ -64,5 +65,15 @@ public class EmployeeController {
                 .doFirst(() -> log.info("==== Getting all employees of company [{}] ====", companyId))
                 .doOnError(throwable -> log.error("==== An error occurred and was not possible found employees. Error: [{}]", throwable.getMessage()))
                 .doFinally(signalType -> log.info("==== Done get employees process with signal type [{}] ====", signalType));
+    }
+
+    @PutMapping("/{employeeId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@securityService.hasUpdateEmployeeDataAccess(#tokenAuthentication, #employeeId)")
+    Mono<EmployeeResponse> updateEmployeeById(TokenAuthentication tokenAuthentication, @PathVariable String employeeId, @RequestBody @Valid EmployeeUpdateRequest request) {
+        return employeeService.updateEmployeeDataById(employeeId, request)
+                .doFirst(() -> log.info("==== Updating employee [{}] with request [{}] ====", employeeId, request))
+                .doOnError(throwable -> log.error("==== An error occurred and was not possible update employee. Error: [{}]", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done update employee process with signal type [{}] ====", signalType));
     }
 }

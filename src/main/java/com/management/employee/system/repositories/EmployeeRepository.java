@@ -10,4 +10,5 @@ public interface EmployeeRepository {
     Mono<Employee> save(EmployeeItem employeeItem);
     Flux<Employee> getAllEmployeesByCompanyId(String companyId);
     Mono<Employee> findById(String employeeId);
+    Mono<Employee> update(EmployeeItem employeeItem);
 }

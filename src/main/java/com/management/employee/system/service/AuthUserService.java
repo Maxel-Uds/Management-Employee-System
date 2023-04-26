@@ -10,7 +10,7 @@ public interface AuthUserService {
 
     Mono<UserDetails> findByUserName(String userName);
     Mono<AuthUser> createAuthUser(AuthUserItem authUser);
-    Mono<AuthUser> updateAuthUserScopes(AuthUser authUser);
+    Mono<AuthUser> updateAuthUser(AuthUser authUser);
     Mono<Void> deleteAuthUser(String userName);
     Mono<Boolean> checkIfUserExistsByUsername(String username);
 }
