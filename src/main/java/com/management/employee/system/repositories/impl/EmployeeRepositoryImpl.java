@@ -34,6 +34,12 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
+    public Mono<Void> delete(String employeeId) {
+        log.info("==== Deleting employee [{}] ====", employeeId);
+        return Mono.fromFuture(table.deleteItem(Key.builder().partitionValue(employeeId).build())).then();
+    }
+
+    @Override
     public Mono<Employee> save(EmployeeItem employeeItem) {
         log.info("==== Saving employee [{}] ====", employeeItem);
         return Mono.fromFuture(table.putItem(employeeItem)).thenReturn(employeeItem.toModel());

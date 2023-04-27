@@ -114,6 +114,14 @@ public class EmployeeServiceImpl implements EmployeeService {
                 });
     }
 
+    @Override
+    public Mono<Void> deleteEmployeeById(String employeeId, String companyId) {
+        log.info("==== Deleting employee [{}] of company [{}] ====", employeeId, companyId);
+        return this.findEmployeeById(companyId, employeeId)
+                .flatMap(employeeResponse -> employeeRepository.delete(employeeId).thenReturn(employeeResponse))
+                .flatMap(employeeResponse -> authUserService.deleteAuthUserByUserName(employeeResponse.getUsername()));
+    }
+
     private Mono<CompanyResponse> checkIfUserAlreadyExists(CompanyResponse company, EmployeeCreateRequest request) {
         return authUserService.checkIfUserExistsByUsername(String.format("%s-%s", company.getAlias(), request.getDocument()))
                 .flatMap(isUserExists -> isUserExists ? Mono.error(new ResourceAlreadyExistsException("Este usuário já pertence a essa empresa")) : Mono.just(company));

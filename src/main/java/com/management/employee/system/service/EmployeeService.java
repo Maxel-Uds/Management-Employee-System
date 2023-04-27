@@ -17,4 +17,5 @@ public interface EmployeeService {
     Mono<EmployeeResponse> getSelfEmployee(String employeeId);
     Flux<EmployeeResponse> getAllEmployeesByCompanyId(String companyId);
     Mono<EmployeeResponse> updateEmployeeDataById(String employeeId, EmployeeUpdateRequest request);
+    Mono<Void> deleteEmployeeById(String employeeId, String companyId);
 }

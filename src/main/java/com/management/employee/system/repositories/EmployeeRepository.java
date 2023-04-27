@@ -11,4 +11,5 @@ public interface EmployeeRepository {
     Flux<Employee> getAllEmployeesByCompanyId(String companyId);
     Mono<Employee> findById(String employeeId);
     Mono<Employee> update(EmployeeItem employeeItem);
+    Mono<Void> delete(String employeeId);
 }

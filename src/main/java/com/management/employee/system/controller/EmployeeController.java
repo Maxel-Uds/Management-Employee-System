@@ -73,7 +73,19 @@ public class EmployeeController {
     Mono<EmployeeResponse> updateEmployeeById(TokenAuthentication tokenAuthentication, @PathVariable String employeeId, @RequestBody @Valid EmployeeUpdateRequest request) {
         return employeeService.updateEmployeeDataById(employeeId, request)
                 .doFirst(() -> log.info("==== Updating employee [{}] with request [{}] ====", employeeId, request))
+                .doOnSuccess(response -> log.info("==== Employee updated with success ===="))
                 .doOnError(throwable -> log.error("==== An error occurred and was not possible update employee. Error: [{}]", throwable.getMessage()))
                 .doFinally(signalType -> log.info("==== Done update employee process with signal type [{}] ====", signalType));
+    }
+
+    @DeleteMapping("/{employeeId}/company/{companyId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@securityService.hasDeleteEmployeeAccess(#tokenAuthentication, #companyId)")
+    Mono<Void> deleteEmployee(TokenAuthentication tokenAuthentication, @PathVariable String employeeId, @PathVariable String companyId) {
+        return employeeService.deleteEmployeeById(employeeId, companyId)
+                .doFirst(() -> log.info("==== Deleting employee [{}] ====", employeeId))
+                .doOnSuccess(response -> log.info("==== Employee deleted with success ===="))
+                .doOnError(throwable -> log.error("==== An error occurred and was not possible delete employee. Error: [{}]", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done delete employee process with signal type [{}] ====", signalType));
     }
 }

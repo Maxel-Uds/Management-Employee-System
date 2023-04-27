@@ -38,7 +38,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     @Override
-    public Mono<Void> deleteAuthUser(String userName) {
+    public Mono<Void> deleteAuthUserByUserName(String userName) {
         return this.findByUserName(userName)
                 .flatMap(userDetails -> this.authUserRepository.delete(((AuthUser) userDetails).getId()));
     }

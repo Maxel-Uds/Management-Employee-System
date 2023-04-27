@@ -56,7 +56,7 @@ public class CompanyServiceImpl implements CompanyService {
     public Mono<Void> deleteCompany(String companyId, TokenAuthentication tokenAuthentication) {
         return companyRepository.delete(companyId)
                 .then(ownerService.deleteOwner(tokenAuthentication.getPrincipal().getPayload().get("ownerId")))
-                .then(authUserService.deleteAuthUser(tokenAuthentication.getPrincipal().getUsername()))
+                .then(authUserService.deleteAuthUserByUserName(tokenAuthentication.getPrincipal().getUsername()))
                 .then(emailService.sendDeletionCompanyEmailToOwner(tokenAuthentication.getPrincipal().getPayload()));
     }
 
