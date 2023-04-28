@@ -68,7 +68,9 @@ resource "aws_iam_role_policy" "sqs-policy" {
         Effect = "Allow",
         Resource = [
           "arn:aws:sqs:us-east-1:${var.aws_account}:${aws_sqs_queue.company-creation-sqs.name}",
-          "arn:aws:sqs:us-east-1:${var.aws_account}:${aws_sqs_queue.company-creation-dlq.name}"
+          "arn:aws:sqs:us-east-1:${var.aws_account}:${aws_sqs_queue.company-creation-dlq.name}",
+          "arn:aws:sqs:us-east-1:${var.aws_account}:${aws_sqs_queue.delete-employee-sqs.name}",
+          "arn:aws:sqs:us-east-1:${var.aws_account}:${aws_sqs_queue.delete-employee-dlq.name}"
         ]
       }
     ]

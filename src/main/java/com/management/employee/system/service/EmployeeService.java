@@ -18,4 +18,5 @@ public interface EmployeeService {
     Flux<EmployeeResponse> getAllEmployeesByCompanyId(String companyId);
     Mono<EmployeeResponse> updateEmployeeDataById(String employeeId, EmployeeUpdateRequest request);
     Mono<Void> deleteEmployeeById(String employeeId, String companyId);
+    Mono<Void> deleteEmployeeAsync(EmployeeResponse response);
 }

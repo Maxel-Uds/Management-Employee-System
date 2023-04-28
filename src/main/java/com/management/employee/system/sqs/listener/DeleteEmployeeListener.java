@@ -2,9 +2,10 @@ package com.management.employee.system.sqs.listener;
 
 import com.google.gson.Gson;
 import com.management.employee.system.config.Metrics;
-import com.management.employee.system.controller.request.CompanyCreateRequest;
-import com.management.employee.system.service.CompanyService;
+import com.management.employee.system.service.AuthUserService;
+import com.management.employee.system.service.EmployeeService;
 import com.management.employee.system.sqs.SqsListener;
+import com.management.employee.system.sqs.event.DeleteEmployeeEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +20,10 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Component
-public class CreateCompanyListener implements SqsListener {
+public class DeleteEmployeeListener implements SqsListener {
 
-    private final CompanyService companyService;
+    private final AuthUserService authUserService;
+    private final EmployeeService employeeService;
     private final Integer visibilityTimeout;
     private final Integer maxVisibilityTimeout;
     private final Integer receiveCount;
@@ -33,7 +35,7 @@ public class CreateCompanyListener implements SqsListener {
     private final String url;
 
     @Autowired
-    public CreateCompanyListener(@Value("${aws.sqs.create-company-url}") String url,
+    public DeleteEmployeeListener(@Value("${aws.sqs.delete-employee-url}") String url,
                                  @Value("${aws.sqs.listeners}") Integer listenerCount,
                                  @Value("${aws.sqs.batch-size}") Integer eventsBatchSize,
                                  @Value("${aws.sqs.wait-time}") Integer eventsWaitTime,
@@ -42,7 +44,8 @@ public class CreateCompanyListener implements SqsListener {
                                  @Value("${aws.sqs.max-visibility-timeout}") Integer maxVisibilityTimeout,
                                  Metrics metrics,
                                  SqsAsyncClient client,
-                                 CompanyService companyService) {
+                                 EmployeeService employeeService,
+                                 AuthUserService authUserService) {
         this.url = url;
         this.client = client;
         this.listenerCount = listenerCount;
@@ -52,7 +55,8 @@ public class CreateCompanyListener implements SqsListener {
         this.maxVisibilityTimeout = maxVisibilityTimeout;
         this.visibilityTimeout = visibilityTimeout;
         this.metrics = metrics;
-        this.companyService = companyService;
+        this.employeeService = employeeService;
+        this.authUserService = authUserService;
     }
 
     @PostConstruct
@@ -95,10 +99,13 @@ public class CreateCompanyListener implements SqsListener {
 
         if (Objects.nonNull(message.messageId())) {
             int count = getReceiveCount(message);
-            var companyCreationRequest = new Gson().fromJson(message.body(), CompanyCreateRequest.class);
+            var deleteEmployeeEvent = new Gson().fromJson(message.body(), DeleteEmployeeEvent.class);
             log.info("Evento ID {} sendo processado. Quantidade de vezes processada: {}", message.messageId(), count);
 
-            return this.companyService.createCompany(companyCreationRequest)
+            return this.employeeService.getAllEmployeesByCompanyId(deleteEmployeeEvent.getCompanyId())
+                    .flatMapSequential(response ->  employeeService.deleteEmployeeAsync(response).thenReturn(response))
+                    .flatMap(response ->  authUserService.deleteAuthUserByUserName(response.getUsername()))
+                    .then()
                     .doOnError(ex -> handleEventError(message, count, ex))
                     .doOnSuccess(value -> log.info("Evento ID {} processado com sucesso", message.messageId()))
                     .then(Mono.defer(() -> this.deleteMessage(message)));

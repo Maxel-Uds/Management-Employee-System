@@ -1,9 +1,8 @@
 package com.management.employee.system.sqs;
 
-import com.management.employee.system.controller.request.CompanyCreateRequest;
-import reactor.core.publisher.Mono;
+import com.management.employee.system.sqs.event.Event;
 
 public interface SqsProducer {
 
-    Mono<CompanyCreateRequest> produce(CompanyCreateRequest request);
+    Event produce(Event event);
 }

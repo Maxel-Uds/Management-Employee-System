@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
 @Slf4j
 @RequiredArgsConstructor
-public class CreateCompanyProducer implements SqsProducer {
+public class DeleteEmployeeProducer implements SqsProducer {
 
     private final String sqsUrl;
     private final SqsAsyncClient client;

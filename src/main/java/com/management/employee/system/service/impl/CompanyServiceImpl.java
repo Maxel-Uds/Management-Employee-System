@@ -8,12 +8,10 @@ import com.management.employee.system.controller.response.CompanyResponse;
 import com.management.employee.system.controller.response.CompanyUpdateResponse;
 import com.management.employee.system.exception.ResourceAlreadyExistsException;
 import com.management.employee.system.mapper.CompanyMapper;
+import com.management.employee.system.mapper.EmployeeMapper;
 import com.management.employee.system.repositories.CompanyRepository;
 import com.management.employee.system.repositories.item.CompanyItem;
-import com.management.employee.system.service.AuthUserService;
-import com.management.employee.system.service.CompanyService;
-import com.management.employee.system.service.EmailService;
-import com.management.employee.system.service.OwnerService;
+import com.management.employee.system.service.*;
 import com.management.employee.system.sqs.SqsProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +24,13 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
-    private final SqsProducer sqsProducer;
+
     private final EmailService emailService;
     private final OwnerService ownerService;
     private final CompanyMapper companyMapper;
     private final AuthUserService authUserService;
+    private final SqsProducer createCompanyProducer;
+    private final SqsProducer deleteEmployeeProducer;
     private final CompanyRepository companyRepository;
 
 
@@ -38,8 +38,9 @@ public class CompanyServiceImpl implements CompanyService {
     public Mono<CompanyCreateResponse> createCompanyAsync(CompanyCreateRequest request) {
         return this.verifyIfAliasExists(request)
                 .flatMap(this::verifyIfDocumentExists)
-                .flatMap(this.sqsProducer::produce)
-                .flatMap(companyRequest -> Mono.just(this.companyMapper.toResponse(companyRequest)));
+                .map(companyMapper::toEvent)
+                .map(this.createCompanyProducer::produce)
+                .map(event -> this.companyMapper.toResponse(request));
     }
 
     @Override
@@ -57,6 +58,8 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.delete(companyId)
                 .then(ownerService.deleteOwner(tokenAuthentication.getPrincipal().getPayload().get("ownerId")))
                 .then(authUserService.deleteAuthUserByUserName(tokenAuthentication.getPrincipal().getUsername()))
+                .thenReturn(companyMapper.toEvent(companyId))
+                .map(deleteEmployeeProducer::produce)
                 .then(emailService.sendDeletionCompanyEmailToOwner(tokenAuthentication.getPrincipal().getPayload()));
     }
 
