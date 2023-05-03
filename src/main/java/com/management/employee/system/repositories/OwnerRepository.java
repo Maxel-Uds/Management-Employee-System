@@ -8,4 +8,5 @@ public interface OwnerRepository {
 
     Mono<Owner> save(OwnerItem owner);
     Mono<Void> delete(String ownerId);
+    Mono<Owner> findById(String ownerId);
 }

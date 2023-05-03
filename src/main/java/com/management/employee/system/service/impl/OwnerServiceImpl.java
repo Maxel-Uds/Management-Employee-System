@@ -1,6 +1,8 @@
 package com.management.employee.system.service.impl;
 
 import com.management.employee.system.controller.request.CompanyOwner;
+import com.management.employee.system.controller.response.OwnerResponse;
+import com.management.employee.system.mapper.OwnerMapper;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.model.Company;
 import com.management.employee.system.model.Owner;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class OwnerServiceImpl implements OwnerService {
 
     private final PasswordEncoder encoder;
+    private final OwnerMapper ownerMapper;
     private final ScopesService scopesService;
     private final OwnerRepository ownerRepository;
     private final AuthUserService authUserService;
@@ -52,6 +55,13 @@ public class OwnerServiceImpl implements OwnerService {
     public Mono<Void> deleteOwner(String ownerId) {
         log.info("==== Deleting owner [{}] ====", ownerId);
         return ownerRepository.delete(ownerId);
+    }
+
+    @Override
+    public Mono<OwnerResponse> findOwnerById(String ownerId) {
+        log.info("==== Getting data of owner [{}] ====", ownerId);
+        return ownerRepository.findById(ownerId)
+                .map(ownerMapper::toResponse);
     }
 
     @Override

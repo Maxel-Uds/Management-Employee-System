@@ -33,4 +33,10 @@ public class OwnerRepositoryImpl implements OwnerRepository {
     public Mono<Void> delete(String ownerId) {
         return Mono.fromFuture(table.deleteItem(Key.builder().partitionValue(ownerId).build())).then();
     }
+
+    @Override
+    public Mono<Owner> findById(String ownerId) {
+        return Mono.fromFuture(table.getItem(Key.builder().partitionValue(ownerId).build()))
+                .map(OwnerItem::toModel);
+    }
 }
