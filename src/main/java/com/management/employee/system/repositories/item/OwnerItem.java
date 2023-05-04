@@ -23,17 +23,28 @@ public class OwnerItem {
     private String name;
     private String phone;
     private String email;
-    private String document;
+    private String ownerDocument;
+    private String username;
 
     public OwnerItem() {
     }
 
-    public OwnerItem(CompanyOwner owner) {
+    public OwnerItem(CompanyOwner owner, String username) {
         this.id = UUID.randomUUID().toString();
         this.name = owner.getName();
         this.phone = owner.getPhone();
         this.email = owner.getEmail();
-        this.document = owner.getDocument();
+        this.ownerDocument = owner.getOwnerDocument();
+        this.username = username;
+    }
+
+    public OwnerItem(Owner owner) {
+        this.id = owner.getId();
+        this.name = owner.getName();
+        this.phone = owner.getPhone();
+        this.email = owner.getEmail();
+        this.ownerDocument = owner.getOwnerDocument();
+        this.username = owner.getUsername();
     }
 
     @DynamoDbPartitionKey
@@ -71,12 +82,20 @@ public class OwnerItem {
     }
 
     @DynamoDbSecondaryPartitionKey(indexNames = INDEX_DOCUMENT)
-    public String getDocument() {
-        return document;
+    public String getOwnerDocument() {
+        return ownerDocument;
     }
 
-    public void setDocument(String document) {
-        this.document = document;
+    public void setOwnerDocument(String document) {
+        this.ownerDocument = document;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Owner toModel() {
@@ -84,8 +103,9 @@ public class OwnerItem {
                 .id(id)
                 .name(name)
                 .phone(phone)
-                .document(document)
+                .ownerDocument(ownerDocument)
                 .email(email)
+                .username(username)
                 .build();
     }
 }

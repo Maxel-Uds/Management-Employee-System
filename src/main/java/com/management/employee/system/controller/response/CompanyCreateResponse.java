@@ -9,6 +9,6 @@ public class CompanyCreateResponse {
 
     private String name;
     private String alias;
-    private String document;
+    private String companyDocument;
     private CompanyOwner owner;
 }

@@ -11,6 +11,6 @@ public class CompanyOwner {
     private String name;
     private String phone;
     private String email;
-    private String document;
+    private String ownerDocument;
     private AuthUser.UserType userType;
 }

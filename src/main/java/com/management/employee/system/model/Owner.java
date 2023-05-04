@@ -14,9 +14,8 @@ public class Owner {
     private String name;
     private String phone;
     private String email;
-    private String document;
+    private String ownerDocument;
     @ToString.Exclude
     private String password;
-    @ToString.Exclude
     private String username;
 }

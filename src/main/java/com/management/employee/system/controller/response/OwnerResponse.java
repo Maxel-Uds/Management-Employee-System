@@ -11,5 +11,6 @@ public class OwnerResponse {
     private String name;
     private String phone;
     private String email;
-    private String document;
+    private String ownerDocument;
+    private String username;
 }

@@ -10,6 +10,6 @@ public class CompanyResponse {
     private String id;
     private String name;
     private String alias;
-    private String document;
+    private String companyDocument;
     private String ownerId;
 }

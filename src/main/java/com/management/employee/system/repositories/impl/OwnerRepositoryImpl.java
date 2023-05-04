@@ -39,4 +39,10 @@ public class OwnerRepositoryImpl implements OwnerRepository {
         return Mono.fromFuture(table.getItem(Key.builder().partitionValue(ownerId).build()))
                 .map(OwnerItem::toModel);
     }
+
+    @Override
+    public Mono<Owner> updateOwner(OwnerItem owner) {
+        log.info("==== Updating owner with data [{}] ====", owner);
+        return Mono.fromFuture(table.updateItem(owner)).thenReturn(owner.toModel());
+    }
 }

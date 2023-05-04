@@ -1,6 +1,7 @@
 package com.management.employee.system.service.impl;
 
 import com.management.employee.system.controller.request.CompanyOwner;
+import com.management.employee.system.controller.request.OwnerUpdateRequest;
 import com.management.employee.system.controller.response.OwnerResponse;
 import com.management.employee.system.mapper.OwnerMapper;
 import com.management.employee.system.model.AuthUser;
@@ -33,8 +34,8 @@ public class OwnerServiceImpl implements OwnerService {
     private final AuthUserService authUserService;
 
     @Override
-    public Mono<Owner> saveOwner(CompanyOwner owner) {
-        return this.ownerRepository.save(new OwnerItem(owner))
+    public Mono<Owner> saveOwner(CompanyOwner owner, String ownerUserName) {
+        return this.ownerRepository.save(new OwnerItem(owner, ownerUserName))
                 .doFirst(() -> log.info("==== Saving owner [{}] ====", owner))
                 .doOnSuccess(resp -> log.info("==== Owner saved with success ===="))
                 .doOnError(throwable -> log.error("==== An error ocurred when saving owner. Error: [{}] ====", throwable.getMessage()))
@@ -46,7 +47,7 @@ public class OwnerServiceImpl implements OwnerService {
         log.info("==== Start creation of auth user to owner [{}] ====", owner.getId());
         return this.formatOwnerScopes(company.getId())
                 .zipWhen(scopes -> this.createPayload(company, owner))
-                .flatMap(scopesAndPayload -> Mono.just(new AuthUserItem(owner.setUsername(String.format("%s-%s", company.getAlias(), owner.getDocument())), scopesAndPayload.getT1(), createRandomPass(owner), scopesAndPayload.getT2())))
+                .flatMap(scopesAndPayload -> Mono.just(new AuthUserItem(owner, scopesAndPayload.getT1(), createRandomPass(owner), scopesAndPayload.getT2())))
                 .flatMap(this.authUserService::createAuthUser)
                 .thenReturn(owner);
     }
@@ -65,6 +66,27 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public Mono<OwnerResponse> updateOwnerById(String ownerId, OwnerUpdateRequest request) {
+        log.info("==== Updating owner [{}] with request [{}] ====", ownerId, request);
+        return ownerRepository.findById(ownerId)
+                .map(owner -> this.changeOwnerData(owner, request))
+                .map(OwnerItem::new)
+                .flatMap(ownerRepository::updateOwner)
+                .map(ownerMapper::toResponse)
+                .flatMap(ownerResponse -> {
+                    return authUserService.findByUserName(ownerResponse.getUsername())
+                            .map(userDetails -> (AuthUser) userDetails)
+                            .map(authUser -> {
+                                authUser.getPayload().put("ownerEmail", request.getEmail());
+                                authUser.getPayload().put("ownerName", request.getName());
+                                return authUser;
+                            })
+                            .flatMap(authUserService::updateAuthUser)
+                            .thenReturn(ownerResponse);
+                });
+    }
+
+    @Override
     public Mono<Set<String>> formatOwnerScopes(String companyId) {
         Map<String, String> ids = new HashMap<>() {{
            put("companyId", companyId);
@@ -75,6 +97,12 @@ public class OwnerServiceImpl implements OwnerService {
                     String key = scope.split(":")[1];
                     return scope.replace(key, ids.get(key));
                 }).collect(Collectors.toSet())));
+    }
+
+    private Owner changeOwnerData(Owner owner, OwnerUpdateRequest request) {
+        return owner.setName(request.getName())
+                .setPhone(request.getPhone())
+                .setEmail(request.getEmail());
     }
 
     private String createRandomPass(Owner owner) {

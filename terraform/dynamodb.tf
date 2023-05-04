@@ -94,7 +94,7 @@ resource "aws_dynamodb_table" "company" {
   }
 
   attribute {
-    name = "document"
+    name = "companyDocument"
     type = "S"
   }
 
@@ -105,7 +105,7 @@ resource "aws_dynamodb_table" "company" {
 
   global_secondary_index  {
     name = "company_document_index"
-    hash_key = "document"
+    hash_key = "companyDocument"
     write_capacity = var.read_capacity
     read_capacity = var.write_capacity
     projection_type = "ALL"
@@ -133,7 +133,7 @@ resource "aws_dynamodb_table" "owner" {
   }
 
   attribute {
-    name = "document"
+    name = "ownerDocument"
     type = "S"
   }
 
@@ -152,7 +152,7 @@ resource "aws_dynamodb_table" "owner" {
 
   global_secondary_index  {
     name = "owner_document_index"
-    hash_key = "document"
+    hash_key = "ownerDocument"
     write_capacity = var.read_capacity
     read_capacity = var.write_capacity
     projection_type = "ALL"

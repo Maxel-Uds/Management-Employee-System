@@ -47,7 +47,7 @@ public class AuthUserItem {
     public AuthUserItem(Owner owner, Set<String> scopes, String pass, Map<String, String> payload) {
         this.id = UUID.randomUUID().toString();
         this.userType = AuthUser.UserType.ADMIN;
-        this.document = owner.getDocument();
+        this.document = owner.getOwnerDocument();
         this.username = owner.getUsername();
         this.password = pass;
         this.scopes = scopes;

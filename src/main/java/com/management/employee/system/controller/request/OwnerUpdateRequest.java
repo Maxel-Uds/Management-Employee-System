@@ -1,7 +1,5 @@
 package com.management.employee.system.controller.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.management.employee.system.model.AuthUser;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,7 +14,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 @ToString
 @Accessors(chain = true)
-public class CompanyOwner {
+public class OwnerUpdateRequest {
 
     @Length(min = 5, max = 20, message = "O nome deve estar entre 5 e 20 caracteres")
     @NotEmpty(message = "O nome do owner é obrigatório")
@@ -29,12 +27,4 @@ public class CompanyOwner {
     @Email
     @NotEmpty(message = "O email é obrigatório!")
     private String email;
-
-    @Pattern(regexp = "\\d{11}", message = "CPF inválido")
-    @NotEmpty(message = "O documento é obrigatório!")
-    private String ownerDocument;
-
-    @JsonIgnore
-    private AuthUser.UserType userType = AuthUser.UserType.ADMIN;
-
 }

@@ -23,7 +23,7 @@ public class CompanyItem {
     private String id;
     private String name;
     private String alias;
-    private String document;
+    private String companyDocument;
     private String ownerId;
 
     public CompanyItem() {
@@ -33,7 +33,7 @@ public class CompanyItem {
         this.id = UUID.randomUUID().toString();
         this.name = request.getName();
         this.alias = request.getAlias();
-        this.document = request.getDocument();
+        this.companyDocument = request.getCompanyDocument();
         this.ownerId = ownerId;
     }
 
@@ -41,7 +41,7 @@ public class CompanyItem {
         this.id = company.getId();
         this.name = company.getName();
         this.alias = company.getAlias();
-        this.document = company.getDocument();
+        this.companyDocument = company.getCompanyDocument();
         this.ownerId = company.getOwnerId();
     }
 
@@ -72,12 +72,12 @@ public class CompanyItem {
     }
 
     @DynamoDbSecondaryPartitionKey(indexNames = INDEX_DOCUMENT)
-    public String getDocument() {
-        return document;
+    public String getCompanyDocument() {
+        return companyDocument;
     }
 
-    public void setDocument(String document) {
-        this.document = document;
+    public void setCompanyDocument(String companyDocument) {
+        this.companyDocument = companyDocument;
     }
 
     public String getOwnerId() {
@@ -94,7 +94,7 @@ public class CompanyItem {
                 .alias(this.alias)
                 .name(this.name)
                 .ownerId(this.ownerId)
-                .document(this.document)
+                .companyDocument(this.companyDocument)
                 .build();
     }
 }

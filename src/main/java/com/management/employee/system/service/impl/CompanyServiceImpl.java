@@ -46,7 +46,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Mono<Void> createCompany(CompanyCreateRequest request) {
         log.info("==== Starting process to create a company with request [{}] ====", request);
-        return this.ownerService.saveOwner(request.getOwner())
+        return this.ownerService.saveOwner(request.getOwner(), String.format("%s-%s", request.getAlias(), request.getOwner().getOwnerDocument()))
                 .zipWhen(owner -> this.companyRepository.save(new CompanyItem(request, owner.getId())))
                 .flatMap(ownerAndCompany -> this.ownerService.createOwnerAuthUser(ownerAndCompany.getT1(), ownerAndCompany.getT2()).thenReturn(ownerAndCompany))
                 .flatMap(ownerAndCompany -> this.emailService.sendWelcomeMailToOwner(ownerAndCompany.getT1(), ownerAndCompany.getT2()))
@@ -85,8 +85,8 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     private Mono<CompanyCreateRequest> verifyIfDocumentExists(CompanyCreateRequest request) {
-        log.info("==== Verifing if exists a company with document [{}] ====", request.getDocument());
-        return companyRepository.findByCNPJ(request.getDocument())
+        log.info("==== Verifing if exists a company with document [{}] ====", request.getCompanyDocument());
+        return companyRepository.findByCNPJ(request.getCompanyDocument())
                 .flatMap(company -> Objects.nonNull(company.getId()) ? Mono.error(new ResourceAlreadyExistsException("Uma empresa com esse CNPJ já está registrada")) : Mono.just(request));
     }
 }

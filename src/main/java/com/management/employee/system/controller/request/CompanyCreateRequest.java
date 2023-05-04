@@ -26,7 +26,7 @@ public class CompanyCreateRequest {
 
     @Pattern(regexp = "^\\d{14}$", message = "CNPJ inválido")
     @NotEmpty(message = "CNPJ da empresa é obrigatório")
-    private String document;
+    private String companyDocument;
 
     @Valid
     private CompanyOwner owner;
