@@ -75,6 +75,7 @@ public class JwtUtil {
 
     private String createRefreshToken(String requestPath, AuthUser user) {
         return JWT.create()
+                .withClaim("payload", user.getPayload())
                 .withJWTId(UUID.randomUUID().toString())
                 .withClaim("userId", user.getId())
                 .withSubject(user.getUsername())

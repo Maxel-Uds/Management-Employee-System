@@ -184,3 +184,21 @@ resource "aws_dynamodb_table" "employee" {
     projection_type = "ALL"
   }
 }
+
+resource "aws_dynamodb_table" "used_refresh_token" {
+  provider       = aws.us-east-1
+  name           = "used_refresh_token"
+  hash_key       = "token"
+  read_capacity  = var.read_capacity
+  write_capacity = var.write_capacity
+
+  attribute {
+    name = "token"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "tokenExpiration"
+    enabled        = true
+  }
+}

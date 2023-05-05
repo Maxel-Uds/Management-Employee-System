@@ -69,7 +69,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public Mono<Company> findById(String companyId) {
         log.info("==== Looking for company [{}] ====", companyId);
         return Mono.fromFuture(table.getItem(Key.builder().partitionValue(companyId).build()))
-                .flatMap(companyItem -> Mono.just(companyItem.toModel()));
+                .map(CompanyItem::toModel);
     }
 
     @Override

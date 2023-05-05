@@ -2,16 +2,15 @@ package com.management.employee.system.config.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.management.employee.system.model.AuthUser;
-import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-@Getter
 public class TokenAuthentication extends AbstractAuthenticationToken  {
     private final AuthUser authUser;
     private final String bearerToken;
@@ -24,13 +23,20 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
         if (bearerToken != null)
             this.setAuthenticated(true);
 
-        this.authUser = Objects.nonNull(decodedJWT.getClaim("payload").asMap().get("ownerId")) ? this.buildOwnerAuthUser(decodedJWT) : buildEmployeeAuthUser(decodedJWT);
+        this.authUser = Objects.nonNull(decodedJWT.getClaim("payload").asMap().get("ownerId")) ?
+                this.buildOwnerAuthUser(decodedJWT)
+                :
+                this.buildEmployeeAuthUser(decodedJWT);
     }
 
     public TokenAuthentication(String bearerToken) {
         super(null);
         this.bearerToken = bearerToken;
         this.authUser = AuthUser.builder().build();
+    }
+
+    public String getBearerToken() {
+        return bearerToken;
     }
 
     @Override
@@ -51,7 +57,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
     private AuthUser buildOwnerAuthUser(DecodedJWT decodedJWT) {
         return AuthUser.builder()
                 .username(decodedJWT.getClaim("sub").asString())
-                .scopes(Arrays.stream(decodedJWT.getClaim("scope").asArray(String.class)).collect(Collectors.toSet()))
+                .scopes(this.getScopes(decodedJWT))
                 .payload(new HashMap<>() {{
                     put("companyAlias", (String) decodedJWT.getClaim("payload").asMap().get("companyAlias"));
                     put("companyId", (String) decodedJWT.getClaim("payload").asMap().get("companyId"));
@@ -65,7 +71,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
     private AuthUser buildEmployeeAuthUser(DecodedJWT decodedJWT) {
         return AuthUser.builder()
                 .username(decodedJWT.getClaim("sub").asString())
-                .scopes(Arrays.stream(decodedJWT.getClaim("scope").asArray(String.class)).collect(Collectors.toSet()))
+                .scopes(this.getScopes(decodedJWT))
                 .payload(new HashMap<>() {{
                     put("companyAlias", (String) decodedJWT.getClaim("payload").asMap().get("companyAlias"));
                     put("companyId", (String) decodedJWT.getClaim("payload").asMap().get("companyId"));
@@ -74,5 +80,12 @@ public class TokenAuthentication extends AbstractAuthenticationToken  {
                     put("employeeName", (String) decodedJWT.getClaim("payload").asMap().get("employeeName"));
                 }})
                 .build();
+    }
+
+    private Set<String> getScopes(DecodedJWT decodedJWT) {
+        if(Objects.nonNull(decodedJWT.getClaim("scope").asArray(String.class)))
+            return Arrays.stream(decodedJWT.getClaim("scope").asArray(String.class)).collect(Collectors.toSet());
+
+        return Set.of();
     }
 }

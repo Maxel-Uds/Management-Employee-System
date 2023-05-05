@@ -23,7 +23,8 @@ resource "aws_iam_role_policy" "dynamo-policy" {
           "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.owner.name}",
           "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.owner.name}/index/*",
           "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.employee.name}",
-          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.employee.name}/index/*"
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.employee.name}/index/*",
+          "arn:aws:dynamodb:us-east-1:${var.aws_account}:table/${aws_dynamodb_table.used_refresh_token.name}"
         ]
       }
     ]
