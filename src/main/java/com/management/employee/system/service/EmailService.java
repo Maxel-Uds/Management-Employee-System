@@ -10,4 +10,5 @@ public interface EmailService {
 
     Mono<Void> sendWelcomeMailToOwner(Owner owner, Company company);
     Mono<Void> sendDeletionCompanyEmailToOwner(Map<String, String> authUserPayload);
+    Mono<Void> sendResetPasswordEmail(Owner owner);
 }

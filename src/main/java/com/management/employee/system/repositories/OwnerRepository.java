@@ -10,4 +10,5 @@ public interface OwnerRepository {
     Mono<Void> delete(String ownerId);
     Mono<Owner> findById(String ownerId);
     Mono<Owner> updateOwner(OwnerItem owner);
+    Mono<Owner> findByEmail(String ownerEmail);
 }

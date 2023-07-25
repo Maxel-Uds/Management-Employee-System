@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -29,5 +26,15 @@ public class AuthController {
                 .doOnSuccess(response -> log.info("==== Token refreshed with success ===="))
                 .doOnError(throwable -> log.error("==== An error occurred and was not possible refresh token. Error: [{}] ====", throwable.getMessage()))
                 .doFinally(signalType -> log.info("==== Done refresh token process with signal type [{}] ====", signalType));
+    }
+
+    @PutMapping("/reset/password/{ownerEmail}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    Mono<Void> resetOwnerPassword(@PathVariable String ownerEmail) {
+        return authService.resetPassword(ownerEmail)
+                .doFirst(() -> log.info("==== Starting process of reseting password ===="))
+                .doOnSuccess(response -> log.info("==== Process done with success ===="))
+                .doOnError(throwable -> log.error("==== An error occurred and was not possible reset password. Error: [{}] ====", throwable.getMessage()))
+                .doFinally(signalType -> log.info("==== Done password reset process with signal type [{}] ====", signalType));
     }
 }

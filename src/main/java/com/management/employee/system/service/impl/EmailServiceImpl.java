@@ -77,6 +77,23 @@ public class EmailServiceImpl implements EmailService {
         return this.sendEmailAsHtml(authUserPayload.get("ownerEmail"), html, ownerCompanyDeletionSubject);
     }
 
+    @Override
+    public Mono<Void> sendResetPasswordEmail(Owner owner) {
+        ModelAndView resp = ModelAndView.builder()
+                .view("resetPasswordEmail")
+                .model(new HashMap<>() {{
+                    put("name", owner.getName());
+                    put("password", owner.getPassword());
+                }})
+                .build();
+
+        Context context = new Context(resp.getLocale(), resp.getModel());
+        String html = engine.process(resp.getView(), context);
+
+        log.info("==== Sending Reset Password Owner Email to: [{}] ====", owner.getEmail());
+        return this.sendEmailAsHtml(owner.getEmail(), html, welcomeOwnerSubject);
+    }
+
     private Mono<Void> sendEmailAsHtml(String to, String htmlMessage, String subject) {
         var body = Body.builder().html(content(htmlMessage)).build();
         var message = Message.builder()

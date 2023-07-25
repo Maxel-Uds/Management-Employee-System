@@ -24,7 +24,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableReactiveMethodSecurity
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_MATCHERS_POST = { "/company" };
+    private static final String[] PUBLIC_MATCHERS_POST = { "/company"};
+    private static final String[] PUBLIC_MATCHERS_PUT = { "/auth/reset/password/**" };
 
     private final ContextPathFilter contextPathFilter;
     private final AuthenticationFilter authenticationFilter;
@@ -52,6 +53,8 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeExchange()
                     .pathMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST)
+                        .permitAll()
+                    .pathMatchers(HttpMethod.PUT, PUBLIC_MATCHERS_PUT)
                         .permitAll()
                     .anyExchange()
                         .authenticated()

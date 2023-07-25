@@ -1,7 +1,6 @@
 package com.management.employee.system.repositories.impl;
 
 import com.management.employee.system.repositories.RefreshTokenRepository;
-import com.management.employee.system.repositories.item.CompanyItem;
 import com.management.employee.system.repositories.item.RefreshTokenItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

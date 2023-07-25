@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OwnerServiceImpl implements OwnerService {
 
-    private final PasswordEncoder encoder;
     private final OwnerMapper ownerMapper;
+    private final PasswordEncoder encoder;
     private final ScopesService scopesService;
     private final OwnerRepository ownerRepository;
     private final AuthUserService authUserService;
@@ -87,6 +87,12 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public Mono<Owner> findOwnerByEmail(String ownerEmail) {
+        log.info("==== Looking for owner with email [{}] ====", ownerEmail);
+        return ownerRepository.findByEmail(ownerEmail);
+    }
+
+    @Override
     public Mono<Set<String>> formatOwnerScopes(String companyId) {
         Map<String, String> ids = new HashMap<>() {{
            put("companyId", companyId);
@@ -99,13 +105,8 @@ public class OwnerServiceImpl implements OwnerService {
                 }).collect(Collectors.toSet())));
     }
 
-    private Owner changeOwnerData(Owner owner, OwnerUpdateRequest request) {
-        return owner.setName(request.getName())
-                .setPhone(request.getPhone())
-                .setEmail(request.getEmail());
-    }
-
-    private String createRandomPass(Owner owner) {
+    @Override
+    public String createRandomPass(Owner owner) {
         String characters = "!@#$%^&*()_+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
@@ -115,6 +116,12 @@ public class OwnerServiceImpl implements OwnerService {
 
         owner.setPassword(sb.toString());
         return encoder.encode(sb.toString());
+    }
+
+    private Owner changeOwnerData(Owner owner, OwnerUpdateRequest request) {
+        return owner.setName(request.getName())
+                .setPhone(request.getPhone())
+                .setEmail(request.getEmail());
     }
 
     private Mono<Map<String, String>> createPayload(Company company, Owner owner) {

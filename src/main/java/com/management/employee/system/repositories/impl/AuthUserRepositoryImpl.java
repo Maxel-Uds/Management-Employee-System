@@ -40,8 +40,7 @@ public class AuthUserRepositoryImpl implements AuthUserRepository {
         return Mono.just(PagePublisher.create(responseWithName).items())
                 .flatMapMany(Flux::mergeSequential)
                 .map(AuthUserItem::toUserDetails)
-                .collectList()
-                .flatMap(userDetails -> !userDetails.isEmpty() ?  Mono.just(userDetails.stream().findFirst().orElse(AuthUser.builder().build())) : Mono.empty());
+                .singleOrEmpty();
     }
 
     @Override

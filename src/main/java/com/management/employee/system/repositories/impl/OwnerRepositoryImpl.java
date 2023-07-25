@@ -2,15 +2,20 @@ package com.management.employee.system.repositories.impl;
 
 import com.management.employee.system.model.Owner;
 import com.management.employee.system.repositories.OwnerRepository;
+import com.management.employee.system.repositories.item.EmployeeItem;
 import com.management.employee.system.repositories.item.OwnerItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.PagePublisher;
+
+import static software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional.keyEqualTo;
 
 @Slf4j
 @Repository
@@ -44,5 +49,18 @@ public class OwnerRepositoryImpl implements OwnerRepository {
     public Mono<Owner> updateOwner(OwnerItem owner) {
         log.info("==== Updating owner with data [{}] ====", owner);
         return Mono.fromFuture(table.updateItem(owner)).thenReturn(owner.toModel());
+    }
+
+    @Override
+    public Mono<Owner> findByEmail(String ownerEmail) {
+        log.info("==== Getting owner with email [{}] ====", ownerEmail);
+
+        var item = table.index(OwnerItem.INDEX_EMAIL)
+                .query(query -> query.queryConditional(keyEqualTo(k -> k.partitionValue(ownerEmail))));
+
+        return Mono.just(PagePublisher.create(item).items())
+                .flatMapMany(Flux::mergeSequential)
+                .map(OwnerItem::toModel)
+                .singleOrEmpty();
     }
 }

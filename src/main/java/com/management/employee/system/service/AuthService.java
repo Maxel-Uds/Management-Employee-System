@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono;
 public interface AuthService {
 
     Mono<TokenResponse> refreshToken(TokenAuthentication tokenAuthentication, ServerHttpRequest request);
+    Mono<Void> resetPassword(String ownerEmail);
 }
