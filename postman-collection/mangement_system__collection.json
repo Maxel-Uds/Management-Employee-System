@@ -1,0 +1,839 @@
+{
+	"info": {
+		"_postman_id": "83319d86-386d-4eca-ac30-323d02415224",
+		"name": "mangement-system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19752079"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login All Access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 - Login Client\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Set User Access Token\", function () {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    postman.setEnvironmentVariable(\"user-token\", jsonData.access_token);",
+									"    postman.setEnvironmentVariable(\"refresh-token\", jsonData.refresh_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{base-user-secret}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{base-user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/auth/login",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 - Login Client\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Set User Access Token\", function () {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    postman.setEnvironmentVariable(\"user-token\", jsonData.access_token);",
+									"    postman.setEnvironmentVariable(\"refresh-token\", jsonData.refresh_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "dxAYOl",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "company-13557693023",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/auth/login",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Employee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 - Login Client\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Set User Access Token\", function () {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    postman.setEnvironmentVariable(\"user-token\", jsonData.access_token);",
+									"    postman.setEnvironmentVariable(\"refresh-token\", jsonData.refresh_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "98105500",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "company-11314343209",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/auth/login",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Owner Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/auth/reset/password/maxellopes32@gmail.com",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"auth",
+								"reset",
+								"password",
+								"maxellopes32@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Employee Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"98105500\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/auth/reset/password/employee/04183d78-5108-4354-b1fe-f3201834aa64",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"auth",
+								"reset",
+								"password",
+								"employee",
+								"04183d78-5108-4354-b1fe-f3201834aa64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{refresh-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/auth/refresh-token",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Adm",
+			"item": [
+				{
+					"name": "Add Scope",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"scopes\": [\n        \"delete:companyId:company\",\n        \"getData:companyId:company\",\n        \"getData:companyId:employee\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/scopes/add?to=admin",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"scopes",
+								"add"
+							],
+							"query": [
+								{
+									"key": "to",
+									"value": "admin"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Scopes ",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"scopes\": [\n        \"getData:companyId:employee\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/scopes/remove?to=admin",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"scopes",
+								"remove"
+							],
+							"query": [
+								{
+									"key": "to",
+									"value": "admin"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Autheticated",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/auth-data",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"auth-data"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Create Company",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My Company LTDA.\",\n    \"alias\": \"company\",\n    \"companyDocument\": \"07519286000165\",\n    \"owner\": {\n        \"name\": \"Maxel Udson Alves\",\n        \"phone\": \"41998105500\",\n        \"ownerDocument\": \"13557693023\",\n        \"email\": \"maxellopes32@gmail.com\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/company",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My Company LTDA.\",\n    \"alias\": \"company\",\n    \"document\": \"07519286000165\",\n    \"owner\": {\n        \"name\": \"Maxel Udson Alves\",\n        \"phone\": \"41998105500\",\n        \"document\": \"13557693023\",\n        \"email\": \"maxellopes32@gmail.com\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/company/2d49892f-eca2-466e-872a-a59d6e1f02c7",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"company",
+								"2d49892f-eca2-466e-872a-a59d6e1f02c7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/company/d7ec1734-a1b6-4a4f-bd92-80ad0b6848ab",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"company",
+								"d7ec1734-a1b6-4a4f-bd92-80ad0b6848ab"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My Company LTDA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/company/e9ffe655-4875-4e89-9ad3-96fe2e8acac0",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"company",
+								"e9ffe655-4875-4e89-9ad3-96fe2e8acac0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "Create Employee",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Marcos Da Silva\",\n    \"email\": \"maxellopes32@gmail.com\",\n    \"document\": \"11314343209\",\n    \"companyId\": \"9e28b43e-d70b-45bc-8a30-3a865a80140a\",\n    \"password\": \"senhateste\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/employee",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"employee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/employee/8a1f7964-eb35-4b00-b02a-7cf1dca505e6/company/e9ffe655-4875-4e89-9ad3-96fe2e8acac0",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"employee",
+								"8a1f7964-eb35-4b00-b02a-7cf1dca505e6",
+								"company",
+								"e9ffe655-4875-4e89-9ad3-96fe2e8acac0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Self Employee Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/employee/8a1f7964-eb35-4b00-b02a-7cf1dca505e6",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"employee",
+								"8a1f7964-eb35-4b00-b02a-7cf1dca505e6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employees By Company Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/employee/get-all-of/2d49892f-eca2-466e-872a-a59d6e1f02c7",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"employee",
+								"get-all-of",
+								"2d49892f-eca2-466e-872a-a59d6e1f02c7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateEmployee",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"José Carlos\",\n    \"email\": \"jose.carlos@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/employee/4c75e4e9-977b-4541-830b-23333ac47e62",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"employee",
+								"4c75e4e9-977b-4541-830b-23333ac47e62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Employee By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/employee/8a1f7964-eb35-4b00-b02a-7cf1dca505e6/company/e9ffe655-4875-4e89-9ad3-96fe2e8acac0",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"employee",
+								"8a1f7964-eb35-4b00-b02a-7cf1dca505e6",
+								"company",
+								"e9ffe655-4875-4e89-9ad3-96fe2e8acac0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Owner",
+			"item": [
+				{
+					"name": "Find Owner By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/owner",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"owner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Owner Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Cleber Da Silva\",\n    \"phone\": \"45998105500\",\n    \"email\": \"cleber.santos@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{schema}}://{{host}}/management-system-api/v1/owner",
+							"protocol": "{{schema}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"management-system-api",
+								"v1",
+								"owner"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
