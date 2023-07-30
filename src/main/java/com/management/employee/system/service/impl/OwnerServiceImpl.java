@@ -13,9 +13,9 @@ import com.management.employee.system.repositories.item.OwnerItem;
 import com.management.employee.system.service.AuthUserService;
 import com.management.employee.system.service.OwnerService;
 import com.management.employee.system.service.ScopesService;
+import com.management.employee.system.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class OwnerServiceImpl implements OwnerService {
 
     private final OwnerMapper ownerMapper;
-    private final PasswordEncoder encoder;
+    private final PasswordUtil passwordUtil;
     private final ScopesService scopesService;
     private final OwnerRepository ownerRepository;
     private final AuthUserService authUserService;
@@ -115,7 +115,7 @@ public class OwnerServiceImpl implements OwnerService {
         }
 
         owner.setPassword(sb.toString());
-        return encoder.encode(sb.toString());
+        return passwordUtil.encryptPass(sb.toString());
     }
 
     private Owner changeOwnerData(Owner owner, OwnerUpdateRequest request) {

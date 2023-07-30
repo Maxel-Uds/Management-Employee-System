@@ -17,9 +17,9 @@ import com.management.employee.system.service.AuthUserService;
 import com.management.employee.system.service.CompanyService;
 import com.management.employee.system.service.EmployeeService;
 import com.management.employee.system.service.ScopesService;
+import com.management.employee.system.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final PasswordEncoder encoder;
+    private final PasswordUtil passwordUtil;
     private final ScopesService scopesService;
     private final CompanyService companyService;
     private final EmployeeMapper employeeMapper;
@@ -137,7 +137,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("==== Start creation of auth user to employee [{}] ====", employee.getId());
         return this.formatEmployeeScopes(company.getId(), employee.getId())
                 .zipWhen(scopes -> this.createPayload(company, employee))
-                .flatMap(scopesAndPayload -> Mono.just(new AuthUserItem(employee.setUsername(String.format("%s-%s", company.getAlias(), employee.getDocument())), scopesAndPayload.getT1(), encoder.encode(employee.getPassword()), scopesAndPayload.getT2())))
+                .flatMap(scopesAndPayload -> Mono.just(new AuthUserItem(employee.setUsername(String.format("%s-%s", company.getAlias(), employee.getDocument())), scopesAndPayload.getT1(), passwordUtil.encryptPass(employee.getPassword()), scopesAndPayload.getT2())))
                 .flatMap(this.authUserService::createAuthUser)
                 .thenReturn(employee);
     }

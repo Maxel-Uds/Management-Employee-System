@@ -2,16 +2,15 @@ package com.management.employee.system.service.impl;
 
 import com.google.gson.Gson;
 import com.management.employee.system.config.security.TokenAuthentication;
+import com.management.employee.system.controller.request.UpdatePasswordRequest;
 import com.management.employee.system.controller.response.TokenResponse;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.model.Owner;
 import com.management.employee.system.repositories.RefreshTokenRepository;
 import com.management.employee.system.repositories.item.RefreshTokenItem;
-import com.management.employee.system.service.AuthService;
-import com.management.employee.system.service.AuthUserService;
-import com.management.employee.system.service.EmailService;
-import com.management.employee.system.service.OwnerService;
+import com.management.employee.system.service.*;
 import com.management.employee.system.util.JwtUtil;
+import com.management.employee.system.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -21,7 +20,6 @@ import reactor.core.publisher.Mono;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,8 +27,10 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService {
 
     private final JwtUtil jwtUtil;
+    private final PasswordUtil passwordUtil;
     private final EmailService emailService;
     private final OwnerService ownerService;
+    private final EmployeeService employeeService;
     private final AuthUserService authUserService;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Mono<Void> resetPassword(String ownerEmail) {
+    public Mono<Void> resetOwnerPassword(String ownerEmail) {
         return ownerService.findOwnerByEmail(ownerEmail)
                 .switchIfEmpty(Mono.defer(() -> {
                     log.warn("==== Not found any owner with email [{}] ====", ownerEmail);
@@ -62,6 +62,17 @@ public class AuthServiceImpl implements AuthService {
                 });
     }
 
+    @Override
+    public Mono<Void> resetEmployeePassword(String employeeId, UpdatePasswordRequest request, String companyId) {
+        return employeeService.findEmployeeById(companyId, employeeId)
+                .flatMap(employeeResponse -> authUserService.findByUserName(employeeResponse.getUsername())
+                        .map(userDetails -> (AuthUser) userDetails)
+                )
+                .flatMap(authUser -> this.changeEmployeeAuthUserPass(request, authUser))
+                .flatMap(authUserService::updateAuthUser)
+                .then();
+    }
+
     private Mono<RefreshTokenItem> verifyIfRefreshTokenIsUsed(String token) {
         log.info("==== Verifying if refresh token already used ====");
         return this.refreshTokenRepository.getRefreshToken(token)
@@ -71,5 +82,9 @@ public class AuthServiceImpl implements AuthService {
     private Mono<RefreshTokenItem> createRefreshTokenItem(String token) {
         return this.jwtUtil.verifyToken(token)
                 .map(decodedJWT -> new RefreshTokenItem(token, decodedJWT.getClaim("exp").asLong(), decodedJWT.getClaim("sub").asString()));
+    }
+
+    private Mono<AuthUser> changeEmployeeAuthUserPass(UpdatePasswordRequest request, AuthUser authUser) {
+        return Mono.just(authUser.setPassword(passwordUtil.encryptPass(request.getPassword())));
     }
 }

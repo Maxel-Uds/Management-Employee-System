@@ -18,6 +18,8 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+import java.util.regex.Pattern;
+
 @Slf4j
 @Configuration
 @EnableWebFluxSecurity
@@ -25,7 +27,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_MATCHERS_POST = { "/company"};
-    private static final String[] PUBLIC_MATCHERS_PUT = { "/auth/reset/password/**" };
+    private static final String[] PUBLIC_MATCHERS_PUT = { "/auth/reset/password/{ownerEmail:[a-zA-Z0-9_.-]+@[a-z].+[a-z]{2,4}$}"};
 
     private final ContextPathFilter contextPathFilter;
     private final AuthenticationFilter authenticationFilter;

@@ -15,7 +15,8 @@ public enum Scopes {
     OWNER_GET_EMPLOYEE_ACCESS("getEmployeeData:companyId:company"),
     GET_SELF_EMPLOYEE_ACCESS("getData:employeeId:employee"),
     UPDATE_EMPLOYEE_ACCESS("updateData:employeeId:employee"),
-    DELETE_EMPLOYEE_ACCESS("delete:companyId:employee");
+    DELETE_EMPLOYEE_ACCESS("delete:companyId:employee"),
+    RESET_PASSWORD_EMPLOYEE_ACCESS("resetPassword:companyId:employee");
 
     private final String scope;
 }

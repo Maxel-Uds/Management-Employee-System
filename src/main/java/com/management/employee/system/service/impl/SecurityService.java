@@ -41,6 +41,11 @@ public class SecurityService {
         return tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.UPDATE_COMPANY_DATA, companyId));
     }
 
+    public boolean hasResetPasswordEmployeeAccess(TokenAuthentication tokenAuthentication) {
+        final var companyId = tokenAuthentication.getPrincipal().getPayload().get("companyId");
+        return tokenAuthentication.getPrincipal().getScopes().contains(this.formatScope(Scopes.RESET_PASSWORD_EMPLOYEE_ACCESS, companyId));
+    }
+
     private String formatScope(Scopes scope, String id) {
         var key = scope.getScope().split(":")[1];
         return scope.getScope().replace(key, id);
