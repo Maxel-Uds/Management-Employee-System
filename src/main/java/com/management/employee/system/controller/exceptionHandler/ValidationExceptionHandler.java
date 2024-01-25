@@ -2,7 +2,10 @@ package com.management.employee.system.controller.exceptionHandler;
 
 import com.management.employee.system.exception.ResourceAlreadyExistsException;
 import com.management.employee.system.exception.ResourceNotFoundException;
+import com.management.employee.system.model.enums.UserType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +24,7 @@ public class ValidationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(WebExchangeBindException.class)
-    public ErrorResponse validationExceptionHanlder(WebExchangeBindException exception){
+    public ErrorResponse validationExceptionHandler(WebExchangeBindException exception){
 
         final List<FieldMessage> errors =
                 exception.getFieldErrors()
@@ -42,9 +46,13 @@ public class ValidationExceptionHandler {
                 .build();
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(RuntimeException.class)
-    public ErrorResponse runtimeExceptionHandler(RuntimeException exception, ServerHttpRequest request){
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(TypeMismatchException.class)
+    public ErrorResponse typeMismatchExceptionHandler(TypeMismatchException exception, ServerHttpRequest request){
+        if(request.getURI().getPath().contains("/scopes/")) {
+            return typeMismatchUserTypeEnumResponseOf(exception, request);
+        }
+
         return badRequestResponseOf(exception, request);
     }
 
@@ -87,6 +95,18 @@ public class ValidationExceptionHandler {
                 .timestamp(System.currentTimeMillis())
                 .path(request.getURI().getPath())
                 .error(HttpStatus.CONFLICT.name().toLowerCase())
+                .build();
+    }
+
+    private ErrorResponse typeMismatchUserTypeEnumResponseOf(TypeMismatchException exception, ServerHttpRequest request){
+        log.error("==== Error, just this roles are accepted: {}. Path: [{}]. Method: [{}]. Code: [{}] ====", UserType.values(), request.getURI().getPath(), request.getMethod(), HttpStatus.BAD_REQUEST.value());
+        return ErrorResponse
+                .builder()
+                .message("Error, just this roles are accepted: " + Arrays.toString(UserType.values()))
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .timestamp(System.currentTimeMillis())
+                .path(request.getURI().getPath())
+                .error(HttpStatus.UNPROCESSABLE_ENTITY.name().toLowerCase())
                 .build();
     }
 

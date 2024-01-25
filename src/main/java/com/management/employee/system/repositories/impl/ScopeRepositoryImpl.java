@@ -3,6 +3,7 @@ package com.management.employee.system.repositories.impl;
 import com.management.employee.system.controller.request.ScopeUpdateRequest;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.model.Scopes;
+import com.management.employee.system.model.enums.UserType;
 import com.management.employee.system.repositories.ScopeRepository;
 import com.management.employee.system.repositories.item.UserScopeItem;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class ScopeRepositoryImpl implements ScopeRepository {
     }
 
     @Override
-    public Mono<Scopes> addScope(ScopeUpdateRequest request, AuthUser.UserType userType) {
+    public Mono<Scopes> addScope(ScopeUpdateRequest request, UserType userType) {
         log.info("==== Add scopes [{}] to [{}]", request.getScopes(),  userType.name());
         return this.findScopesByUserType(userType)
                 .flatMap(scopes -> Mono.just(scopes.addScope(request.getScopes())))
@@ -34,7 +35,7 @@ public class ScopeRepositoryImpl implements ScopeRepository {
     }
 
     @Override
-    public Mono<Scopes> removeScope(ScopeUpdateRequest request, AuthUser.UserType userType) {
+    public Mono<Scopes> removeScope(ScopeUpdateRequest request, UserType userType) {
         log.info("==== Remove scopes [{}] of [{}]", request.getScopes(),  userType.name());
         return this.findScopesByUserType(userType)
                 .flatMap(scopes -> Mono.just(scopes.removeScope(request.getScopes())))
@@ -43,7 +44,7 @@ public class ScopeRepositoryImpl implements ScopeRepository {
 
 
     @Override
-    public Mono<Scopes> findScopesByUserType(AuthUser.UserType userType) {
+    public Mono<Scopes> findScopesByUserType(UserType userType) {
         log.info("==== Looking for scopes  of user type [{}] ====", userType.name());
         return Mono.fromFuture(table.getItem(Key.builder()
                 .partitionValue(userType.name())

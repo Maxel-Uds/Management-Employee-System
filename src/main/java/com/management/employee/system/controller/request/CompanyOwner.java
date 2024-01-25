@@ -2,6 +2,7 @@ package com.management.employee.system.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.management.employee.system.model.AuthUser;
+import com.management.employee.system.model.enums.UserType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -35,6 +36,6 @@ public class CompanyOwner {
     private String ownerDocument;
 
     @JsonIgnore
-    private AuthUser.UserType userType = AuthUser.UserType.ADMIN;
+    private UserType userType = UserType.ADMIN;
 
 }

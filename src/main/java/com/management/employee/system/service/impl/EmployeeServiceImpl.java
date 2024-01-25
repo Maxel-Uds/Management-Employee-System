@@ -10,6 +10,7 @@ import com.management.employee.system.exception.ResourceNotFoundException;
 import com.management.employee.system.mapper.EmployeeMapper;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.model.Employee;
+import com.management.employee.system.model.enums.UserType;
 import com.management.employee.system.repositories.EmployeeRepository;
 import com.management.employee.system.repositories.item.AuthUserItem;
 import com.management.employee.system.repositories.item.EmployeeItem;
@@ -72,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             put("employeeId", employeeId);
         }};
 
-        return this.scopesService.findByUserType(AuthUser.UserType.EMPLOYEE)
+        return this.scopesService.findByUserType(UserType.EMPLOYEE)
                 .flatMap(scopes -> Mono.just(scopes.getScopes().stream().map(scope -> {
                     String key = scope.split(":")[1];
                     return scope.replace(key, ids.get(key));

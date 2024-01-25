@@ -1,5 +1,6 @@
 package com.management.employee.system.model;
 
+import com.management.employee.system.model.enums.UserType;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,11 +28,6 @@ public class AuthUser implements UserDetails {
     private String password;
     private Set<String> scopes;
     private Map<String, String> payload;
-
-    public enum UserType {
-        ADMIN,
-        EMPLOYEE
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

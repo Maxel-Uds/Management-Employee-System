@@ -1,6 +1,7 @@
 package com.management.employee.system.service.impl;
 
 import com.management.employee.system.model.AuthUser;
+import com.management.employee.system.model.enums.UserType;
 import com.management.employee.system.service.AuthUserService;
 import com.management.employee.system.service.EmployeeService;
 import com.management.employee.system.service.OwnerService;
@@ -47,7 +48,7 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
             return Mono.just(authUser);
         }
 
-        return Mono.just(authUser.getUserType().equals(AuthUser.UserType.ADMIN))
+        return Mono.just(authUser.getUserType().equals(UserType.ADMIN))
                 .flatMap(isAdmin -> isAdmin ? ownerService.formatOwnerScopes(authUser.getPayload().get("companyId")) : employeeService.formatEmployeeScopes(authUser.getPayload().get("companyId"), authUser.getPayload().get("employeeId")))
                 .flatMap(scopesFormatedFromTable -> {
                     return !authUser.getScopes().equals(scopesFormatedFromTable) ? this.updateAuthUserScopes(scopesFormatedFromTable, authUser) : Mono.defer(() -> {

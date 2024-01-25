@@ -7,6 +7,7 @@ import com.management.employee.system.mapper.OwnerMapper;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.model.Company;
 import com.management.employee.system.model.Owner;
+import com.management.employee.system.model.enums.UserType;
 import com.management.employee.system.repositories.OwnerRepository;
 import com.management.employee.system.repositories.item.AuthUserItem;
 import com.management.employee.system.repositories.item.OwnerItem;
@@ -98,7 +99,7 @@ public class OwnerServiceImpl implements OwnerService {
            put("companyId", companyId);
         }};
 
-        return this.scopesService.findByUserType(AuthUser.UserType.ADMIN)
+        return this.scopesService.findByUserType(UserType.ADMIN)
                 .flatMap(scopes -> Mono.just(scopes.getScopes().stream().map(scope -> {
                     String key = scope.split(":")[1];
                     return scope.replace(key, ids.get(key));

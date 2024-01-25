@@ -3,6 +3,7 @@ package com.management.employee.system.repositories.item;
 import com.management.employee.system.model.AuthUser;
 import com.management.employee.system.model.Employee;
 import com.management.employee.system.model.Owner;
+import com.management.employee.system.model.enums.UserType;
 import com.management.employee.system.repositories.converter.CustomConverterProvider;
 import lombok.ToString;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ public class AuthUserItem {
     public static final String INDEX_USERNAME = "auth_user_username_index";
 
     private String id;
-    private AuthUser.UserType userType;
+    private UserType userType;
     private String document;
     private String username;
     @ToString.Exclude
@@ -46,7 +47,7 @@ public class AuthUserItem {
 
     public AuthUserItem(Owner owner, Set<String> scopes, String pass, Map<String, String> payload) {
         this.id = UUID.randomUUID().toString();
-        this.userType = AuthUser.UserType.ADMIN;
+        this.userType = UserType.ADMIN;
         this.document = owner.getOwnerDocument();
         this.username = owner.getUsername();
         this.password = pass;
@@ -56,7 +57,7 @@ public class AuthUserItem {
 
     public AuthUserItem(Employee employee, Set<String> scopes, String pass, Map<String, String> payload) {
         this.id = UUID.randomUUID().toString();
-        this.userType = AuthUser.UserType.EMPLOYEE;
+        this.userType = UserType.EMPLOYEE;
         this.document = employee.getDocument();
         this.username = employee.getUsername();
         this.password = pass;
@@ -73,11 +74,11 @@ public class AuthUserItem {
         this.id = id;
     }
 
-    public AuthUser.UserType getUserType() {
+    public UserType getUserType() {
         return userType;
     }
 
-    public void setUserType(AuthUser.UserType userType) {
+    public void setUserType(UserType userType) {
         this.userType = userType;
     }
 

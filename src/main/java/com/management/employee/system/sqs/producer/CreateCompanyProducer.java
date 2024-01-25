@@ -24,7 +24,7 @@ public class CreateCompanyProducer implements SqsProducer {
                 .queueUrl(sqsUrl)
                 .build());
 
-        log.info("==== Request [{}] sended to queue with success ====", event);
+        log.info("==== Request [{}] sent to queue with success ====", event);
         return event;
     }
 }

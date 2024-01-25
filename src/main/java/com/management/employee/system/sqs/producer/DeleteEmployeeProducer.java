@@ -17,14 +17,14 @@ public class DeleteEmployeeProducer implements SqsProducer {
 
     @Override
     public Event produce(Event event) {
-        log.info("==== Sending request to create a company to queue [{}]", sqsUrl);
+        log.info("==== Sending request to delete a employee to queue [{}]", sqsUrl);
 
         client.sendMessage(SendMessageRequest.builder()
                 .messageBody(new Gson().toJson(event))
                 .queueUrl(sqsUrl)
                 .build());
 
-        log.info("==== Request [{}] sended to queue with success ====", event);
+        log.info("==== Request [{}] sent to queue with success ====", event);
         return event;
     }
 }
