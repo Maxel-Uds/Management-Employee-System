@@ -47,7 +47,12 @@ resource "aws_dynamodb_table_item" "employee_scopes" {
 
   item = jsonencode({
     userType = {"S": "EMPLOYEE"},
-    scopes = {"SS": ["getData:employeeId:employee", "updateData:employeeId:employee"]}
+    scopes = {
+      "SS": [
+        "getData:employeeId:employee", 
+        "updateData:employeeId:employee"
+      ]
+    }
   })
 }
 
@@ -57,16 +62,18 @@ resource "aws_dynamodb_table_item" "admin_scopes" {
 
   item = jsonencode({
     userType = {"S": "ADMIN"},
-    scopes = {"SS": [
-      "resetPassword:companyId:employee",
-      "getData:companyId:employee",
-      "delete:companyId:company",
-      "getData:companyId:company",
-      "updateData:companyId:company",
-      "createData:companyId:employee",
-      "getEmployeeData:companyId:company",
-      "delete:companyId:employee"
-    ]}
+    scopes = {
+      "SS": [
+        "createData:companyId:employee",
+        "delete:companyId:company",
+        "delete:companyId:employee",
+        "getData:companyId:company",
+        "getData:companyId:employee",
+        "getEmployeeData:companyId:company",
+        "resetPassword:companyId:employee",
+        "updateData:companyId:company"
+      ]
+    }
   })
 }
 
