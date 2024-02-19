@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final AuthorizationFilter authorizationFilter;
     private final ReactiveAuthenticationManager authenticationManager;
 
-    public SecurityConfig(@Value("${server.servlet.context-path}") final String contextPath,
+    public SecurityConfig(@Value("${spring.webflux.base-path}") final String contextPath,
                           @Value("${app.auth.path}") final String applicationLoginPath,
                           final ReactiveAuthenticationManager authenticationManager,
                           final AuthorizationManager authorizationManager,
